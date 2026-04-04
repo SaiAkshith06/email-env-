@@ -24,9 +24,11 @@ def root():
     return {"message": "Email Env Running"}
 
 
+from typing import Optional
+
 # ✅ RESET endpoint (deterministic + configurable)
 @app.post("/reset")
-def reset(req: ResetRequest = None):
+def reset(req: Optional[ResetRequest] = None):
     if req is None:
         req = ResetRequest()
     return env.reset(task_id=req.task_id, seed=req.seed)
