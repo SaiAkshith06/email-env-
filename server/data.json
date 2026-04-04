@@ -1,0 +1,182 @@
+[
+  {
+    "email_id": "e001",
+    "subject": "Payment failed",
+    "body": "My payment didn't go through when I tried to upgrade my plan. Card ending in 4242 was declined.",
+    "sender": "user1@example.com",
+    "category": "billing",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e002",
+    "subject": "App crash on submit",
+    "body": "The app crashes every time I click the submit button on the form. I'm using Chrome 120 on Windows 11.",
+    "sender": "user2@example.com",
+    "category": "bug",
+    "priority": "urgent",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e003",
+    "subject": "Can you add dark mode?",
+    "body": "Would love to see a dark mode feature. It would be easier on the eyes for late-night work sessions.",
+    "sender": "user3@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e004",
+    "subject": "Cannot login to my account",
+    "body": "I keep getting 'invalid credentials' even though I just reset my password five minutes ago.",
+    "sender": "user4@example.com",
+    "category": "technical",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e005",
+    "subject": "Not sure what happened",
+    "body": "Something seems wrong with my account but I don't know what exactly. Maybe a settings change?",
+    "sender": "user5@example.com",
+    "category": "general",
+    "priority": "medium",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e006",
+    "subject": "Refund request for duplicate charge",
+    "body": "I was charged twice for the same subscription this month. Please refund the extra $29.99.",
+    "sender": "user6@example.com",
+    "category": "billing",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e007",
+    "subject": "Dashboard not loading",
+    "body": "The analytics dashboard shows a blank page. Console errors mention a failed API call to /metrics endpoint.",
+    "sender": "user7@example.com",
+    "category": "bug",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e008",
+    "subject": "Export to PDF feature",
+    "body": "It would be great to export reports as PDF. CSV is fine but our management team prefers PDF format.",
+    "sender": "user8@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e009",
+    "subject": "Two-factor authentication not working",
+    "body": "The 2FA code from my authenticator app is always rejected. I've tried syncing the time on my phone.",
+    "sender": "user9@example.com",
+    "category": "technical",
+    "priority": "urgent",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e010",
+    "subject": "Invoice discrepancy",
+    "body": "My latest invoice shows $149 but my plan is the $99/month tier. Can you explain the difference?",
+    "sender": "user10@example.com",
+    "category": "billing",
+    "priority": "medium",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e011",
+    "subject": "Data loss after update",
+    "body": "After the latest app update, all my saved projects are gone. This is critical \u2014 I had months of work there.",
+    "sender": "user11@example.com",
+    "category": "bug",
+    "priority": "urgent",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e012",
+    "subject": "Integration with Slack",
+    "body": "Would be nice to get notifications in Slack when tasks are assigned. Any plans for a Slack integration?",
+    "sender": "user12@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e013",
+    "subject": "Account locked out",
+    "body": "My account got locked after too many login attempts. I need to access it urgently for a client meeting.",
+    "sender": "user13@example.com",
+    "category": "technical",
+    "priority": "urgent",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e014",
+    "subject": "I think there might be an issue",
+    "body": "The page loads slowly sometimes, or maybe it's my internet. Not sure if it's on your end or mine.",
+    "sender": "user14@example.com",
+    "category": "general",
+    "priority": "low",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e015",
+    "subject": "Subscription auto-renewed unexpectedly",
+    "body": "I thought I cancelled last month but I was charged again. Can I get a refund for this billing cycle?",
+    "sender": "user15@example.com",
+    "category": "billing",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e016",
+    "subject": "File upload fails silently",
+    "body": "When I try to upload a CSV file larger than 5MB, the progress bar finishes but the file doesn't appear.",
+    "sender": "user16@example.com",
+    "category": "bug",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e017",
+    "subject": "Password reset email not arriving",
+    "body": "I've requested a password reset three times but never received the email. Checked spam folder too.",
+    "sender": "user17@example.com",
+    "category": "technical",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e018",
+    "subject": "Question about team pricing",
+    "body": "We're a team of 15. Do you offer volume discounts? Also, do you have an annual billing option?",
+    "sender": "user18@example.com",
+    "category": "billing",
+    "priority": "medium",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e019",
+    "subject": "Maybe a bug or maybe I'm doing it wrong",
+    "body": "The search seems broken but I'm not sure if I'm using the right syntax. It used to work differently I think.",
+    "sender": "user19@example.com",
+    "category": "general",
+    "priority": "medium",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e020",
+    "subject": "Mobile app improvements",
+    "body": "The mobile app could really use offline mode and push notifications for task deadlines. Would improve workflow a lot.",
+    "sender": "user20@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  }
+]

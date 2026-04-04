@@ -1,0 +1,12 @@
+name: email_env_v2
+version: 0.1.0
+
+models:
+  action: EmailAction
+  observation: EmailObservation
+  state: EmailState
+  reward: float
+
+environment:
+  max_steps: 20
+  deterministic: true
