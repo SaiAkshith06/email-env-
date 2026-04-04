@@ -26,7 +26,9 @@ def root():
 
 # ✅ RESET endpoint (deterministic + configurable)
 @app.post("/reset")
-def reset(req: ResetRequest):
+def reset(req: ResetRequest = None):
+    if req is None:
+        req = ResetRequest()
     return env.reset(task_id=req.task_id, seed=req.seed)
 
 
