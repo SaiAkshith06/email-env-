@@ -7,10 +7,14 @@ BASE_URL = os.getenv("API_BASE_URL", "https://saiakshith06-email-env-v2.hf.space
 
 _hf_token = os.getenv("HF_TOKEN")  # read from env if expected by spec
 
-client = OpenAI(
-    base_url="https://api.groq.com/openai/v1",
-    api_key=os.getenv("OPENAI_API_KEY")
-)
+try:
+    client = OpenAI(
+        base_url="https://api.groq.com/openai/v1",
+        api_key=os.getenv("OPENAI_API_KEY", "dummy_key")
+    )
+except Exception:
+    client = None
+
 
 MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.1-8b-instant")
 

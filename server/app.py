@@ -23,6 +23,10 @@ class ResetRequest(BaseModel):
 def root():
     return {"message": "Email Env Running"}
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 
 from typing import Optional
 
