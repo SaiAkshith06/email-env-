@@ -3,14 +3,16 @@ import os
 import json
 from openai import OpenAI
 
-BASE_URL = os.getenv("API_BASE_URL", "https://saiakshith06-email-env-v2.hf.space")
+# Use ENV_BASE_URL for the environment server
+BASE_URL = os.getenv("ENV_BASE_URL", os.getenv("HOST", "http://localhost:8000"))
 
 _hf_token = os.getenv("HF_TOKEN")  # read from env if expected by spec
 
 try:
+    # Use API_BASE_URL and API_KEY injected by evaluating proxy
     client = OpenAI(
-        base_url="https://api.groq.com/openai/v1",
-        api_key=os.getenv("OPENAI_API_KEY", "dummy_key")
+        base_url=os.getenv("API_BASE_URL", "https://api.groq.com/openai/v1"),
+        api_key=os.getenv("API_KEY", os.getenv("OPENAI_API_KEY", "dummy_key"))
     )
 except Exception:
     client = None
