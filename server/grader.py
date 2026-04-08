@@ -3,7 +3,8 @@ PRIORITY_ORDER = ["low", "medium", "high", "urgent"]
 
 def grade_easy(action, email):
     score = 1.0 if action.category == email["category"] else 0.0
-    return max(0.01, min(0.99, float(score)))
+    EPS = 1e-6
+    return max(EPS, min(1 - EPS, float(score)))
 
 
 def grade_medium(action, email):
@@ -24,7 +25,8 @@ def grade_medium(action, email):
         except ValueError:
             pass
             
-    return max(0.01, min(0.99, float(score)))
+    EPS = 1e-6
+    return max(EPS, min(1 - EPS, float(score)))
 
 
 def grade_hard(action, email):
@@ -43,4 +45,5 @@ def grade_hard(action, email):
     elif pred_amb and not true_amb:
         score -= 0.1
         
-    return max(0.01, min(0.99, float(score)))
+    EPS = 1e-6
+    return max(EPS, min(1 - EPS, float(score)))

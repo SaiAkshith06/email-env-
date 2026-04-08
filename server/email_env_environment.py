@@ -78,8 +78,8 @@ class EmailEnvironment(Environment):
 
         elif task == "hard":
             return grade_hard(action, email)
-
-        return 0.0
+        EPS = 1e-6
+        return max(EPS, min(1 - EPS, float(0.0)))
 
     def step(self, action: EmailAction) -> Tuple[EmailObservation, float, bool, dict]:
 
