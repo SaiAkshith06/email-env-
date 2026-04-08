@@ -17,6 +17,7 @@ MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.1-8b-instant")
 
 TASK_IDS = ["easy", "medium", "hard"]
 
+
 # ---------------- SAFE SCORE ----------------
 def safe_score(score):
     EPS = 1e-6
@@ -24,10 +25,12 @@ def safe_score(score):
         score = float(score)
     except:
         return EPS
+
     if score <= 0:
         return EPS
     if score >= 1:
         return 1 - EPS
+
     return score
 
 
@@ -35,65 +38,28 @@ def safe_score(score):
 def rule_based(obs):
     text = (obs.get("subject", "") + " " + obs.get("body", "")).lower()
 
-    cat_scores = {
-        "billing": 0,
-        "bug": 0,
-        "technical": 0,
-        "feature": 0,
-        "general": 0,
-    }
+    if any(w in text for w in ["payment", "invoice", "billing", "refund"]):
+        return {"category": "billing", "priority": "high", "is_ambiguous": False}
 
-    for w in ["payment", "invoice", "billing", "refund", "charge"]:
-        if w in text:
-            cat_scores["billing"] += 2
+    if any(w in text for w in ["crash", "bug", "error"]):
+        return {"category": "bug", "priority": "urgent", "is_ambiguous": False}
 
-    for w in ["crash", "bug", "error", "exception", "fails", "not working"]:
-        if w in text:
-            cat_scores["bug"] += 2
+    if any(w in text for w in ["login", "account", "password"]):
+        return {"category": "technical", "priority": "high", "is_ambiguous": False}
 
-    for w in ["login", "account", "password", "auth", "signup"]:
-        if w in text:
-            cat_scores["technical"] += 2
+    if any(w in text for w in ["feature", "request"]):
+        return {"category": "feature", "priority": "low", "is_ambiguous": False}
 
-    for w in ["feature", "request", "add", "improve", "enhancement"]:
-        if w in text:
-            cat_scores["feature"] += 2
-
-    category = max(cat_scores, key=cat_scores.get)
-    if cat_scores[category] == 0:
-        category = "general"
-
-    if any(w in text for w in ["crash", "down", "urgent", "asap"]):
-        priority = "urgent"
-    elif any(w in text for w in ["fail", "error", "issue"]):
-        priority = "high"
-    elif any(w in text for w in ["feature", "request"]):
-        priority = "low"
-    else:
-        priority = "medium"
-
-    is_ambiguous = any(w in text for w in [
-        "not sure", "maybe", "i think", "seems"
-    ])
-
-    return {
-        "category": category,
-        "priority": priority,
-        "is_ambiguous": is_ambiguous
-    }
+    return {"category": "general", "priority": "medium", "is_ambiguous": False}
 
 
 # ---------------- LLM ----------------
 def llm_action(obs):
-    prompt = f"""
-Classify this email STRICTLY.
+    if client is None:
+        return rule_based(obs)
 
-Rules:
-- Billing issues → billing + high
-- Bugs/crashes/errors → bug + urgent
-- Feature requests → feature + low
-- Login/account issues → technical + high
-- Ambiguous queries → general + medium + ambiguous=true
+    prompt = f"""
+Classify this email.
 
 Return ONLY JSON:
 {{
@@ -102,7 +68,6 @@ Return ONLY JSON:
   "is_ambiguous": true/false
 }}
 
-Email:
 Subject: {obs.get('subject')}
 Body: {obs.get('body')}
 """
@@ -118,40 +83,23 @@ Body: {obs.get('body')}
         text = text.replace("```json", "").replace("```", "").strip()
 
         result = json.loads(text)
-
-        rb = rule_based(obs)
-
-        if result["category"] == "bug":
-            result["priority"] = "urgent"
-        if result["category"] == "feature":
-            result["priority"] = "low"
-        if result["category"] == "billing":
-            result["priority"] = "high"
-
-        if result["priority"] not in ["urgent", "high", "medium", "low"]:
-            result["priority"] = rb["priority"]
-
         return result
 
-    except Exception as e:
-        print(f"[DEBUG] Groq failed: {e}")
+    except Exception:
         return rule_based(obs)
 
 
 # ---------------- RUN TASK ----------------
-def run_task(task_id: str, seed: int = 42):
-    print(f"[START] task={task_id}")
-
+def run_task(task_id: str):
     rewards = []
 
     try:
         obs = requests.post(
             f"{BASE_URL}/reset",
-            json={"task_id": task_id, "seed": seed}
+            json={"task_id": task_id, "seed": 42}
         ).json()
 
-        for step in range(20):
-
+        for _ in range(20):
             action = llm_action(obs)
 
             result = requests.post(
@@ -159,46 +107,36 @@ def run_task(task_id: str, seed: int = 42):
                 json=action
             ).json()
 
-            raw_reward = result.get("reward", 0.0)
-
-            # FIX APPLIED HERE
-            reward = safe_score(raw_reward)
-
-            done = result.get("done", False)
-
+            reward = safe_score(result.get("reward", 0.0))
             rewards.append(reward)
 
-            if done:
+            if result.get("done", False):
                 break
 
             obs = result.get("observation", {})
 
-        total = safe_score(sum(rewards))  # FIX HERE ALSO
+        # ---------------- FINAL NORMALIZATION ----------------
+        raw_total = sum(rewards)
 
-        success = total > 0
+        # squash into (0,1)
+        total = raw_total / (raw_total + 1)
 
-    except Exception as e:
-        print(f"[ERROR] {str(e)}")
+        total = safe_score(total)
+
+    except Exception:
         total = safe_score(0.0)
-        success = False
-        rewards = []
 
-    return task_id, total, rewards
+    return total
 
 
 # ---------------- MAIN ----------------
 def main():
-    all_results = {}
+    final_scores = {}
 
-    for task_id in TASK_IDS:
-        tid, total, rewards = run_task(task_id)
-        all_results[tid] = safe_score(total)
+    for task in TASK_IDS:
+        final_scores[task] = run_task(task)
 
-    # 🔥 FINAL OUTPUT SAFE
-    final_scores = {
-        k: safe_score(v) for k, v in all_results.items()
-    }
-
+    # ✅ ONLY JSON OUTPUT (VERY IMPORTANT)
     print(json.dumps(final_scores))
 
 
