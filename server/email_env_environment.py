@@ -11,8 +11,6 @@ from email_env.models import EmailAction, EmailObservation, EmailState
 from email_env.server.grader import grade_easy, grade_medium, grade_hard
 
 
-# ✅ FIXED DATA PATH: Prioritize the Docker COPY'd source over the
-# wheel-installed copy in site-packages (which can be stale due to uv cache).
 _DOCKER_DATA_PATH = Path("/app/env/server/data.json")
 _LOCAL_DATA_PATH = Path(__file__).parent / "data.json"
 
@@ -31,6 +29,27 @@ def load_data():
     return data
 
 
+# ---------------- SAFE SCORE ----------------
+def safe_score(score):
+    EPS = 1e-6
+    try:
+        score = float(score)
+    except:
+        return EPS
+
+    if score <= 0:
+        return EPS
+    if score >= 1:
+        return 1 - EPS
+
+    if score < EPS:
+        return EPS
+    if score > 1 - EPS:
+        return 1 - EPS
+
+    return score
+
+
 class EmailEnvironment(Environment):
 
     SUPPORTS_CONCURRENT_SESSIONS: bool = True
@@ -40,7 +59,6 @@ class EmailEnvironment(Environment):
         self._state = None
         self._episode_id = str(uuid4())
 
-    # ✅ FIXED RESET (deterministic)
     def reset(self, task_id="easy", seed=None) -> EmailObservation:
 
         if seed is not None:
@@ -66,29 +84,33 @@ class EmailEnvironment(Environment):
             task_id=task_id
         )
 
-    # ✅ CLEAN REWARD ROUTING
     def compute_reward(self, action: EmailAction, email: dict) -> float:
         task = self._state.task_id
 
         if task == "easy":
-            return grade_easy(action, email)
+            score = grade_easy(action, email)
 
         elif task == "medium":
-            return grade_medium(action, email)
+            score = grade_medium(action, email)
 
         elif task == "hard":
-            return grade_hard(action, email)
-        EPS = 1e-6
-        return max(EPS, min(1 - EPS, float(0.0)))
+            score = grade_hard(action, email)
+
+        else:
+            score = 0.0
+
+        return safe_score(score)
 
     def step(self, action: EmailAction) -> Tuple[EmailObservation, float, bool, dict]:
 
         if self._state.done:
-            return None, 0.0, True, {}
+            return None, safe_score(0.0), True, {}
 
         current_email = self._state.email_queue[self._state.current_index]
 
         reward = self.compute_reward(action, current_email)
+
+        reward = safe_score(reward)
 
         self._state.total_reward += reward
         self._state.current_index += 1
