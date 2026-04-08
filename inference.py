@@ -18,126 +18,98 @@ MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.1-8b-instant")
 TASK_IDS = ["easy", "medium", "hard"]
 
 
-# ---------------- SAFE SCORE ----------------
-def safe_score(score):
+def safe_score(x):
     EPS = 1e-6
     try:
-        score = float(score)
+        x = float(x)
     except:
         return EPS
-
-    if score <= 0:
+    if x <= 0:
         return EPS
-    if score >= 1:
+    if x >= 1:
         return 1 - EPS
+    return x
 
-    return score
 
-
-# ---------------- RULE-BASED ----------------
 def rule_based(obs):
     text = (obs.get("subject", "") + " " + obs.get("body", "")).lower()
 
-    if any(w in text for w in ["payment", "invoice", "billing", "refund"]):
+    if "payment" in text or "billing" in text:
         return {"category": "billing", "priority": "high", "is_ambiguous": False}
-
-    if any(w in text for w in ["crash", "bug", "error"]):
+    if "error" in text or "bug" in text:
         return {"category": "bug", "priority": "urgent", "is_ambiguous": False}
-
-    if any(w in text for w in ["login", "account", "password"]):
+    if "login" in text:
         return {"category": "technical", "priority": "high", "is_ambiguous": False}
-
-    if any(w in text for w in ["feature", "request"]):
+    if "feature" in text:
         return {"category": "feature", "priority": "low", "is_ambiguous": False}
 
     return {"category": "general", "priority": "medium", "is_ambiguous": False}
 
 
-# ---------------- LLM ----------------
 def llm_action(obs):
     if client is None:
         return rule_based(obs)
 
-    prompt = f"""
-Classify this email.
-
-Return ONLY JSON:
-{{
-  "category": "billing|bug|technical|feature|general",
-  "priority": "urgent|high|medium|low",
-  "is_ambiguous": true/false
-}}
-
-Subject: {obs.get('subject')}
-Body: {obs.get('body')}
-"""
-
     try:
         response = client.chat.completions.create(
             model=MODEL_NAME,
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{"role": "user", "content": str(obs)}],
             temperature=0
         )
-
         text = response.choices[0].message.content.strip()
-        text = text.replace("```json", "").replace("```", "").strip()
-
-        result = json.loads(text)
-        return result
-
-    except Exception:
+        return json.loads(text)
+    except:
         return rule_based(obs)
 
 
-# ---------------- RUN TASK ----------------
-def run_task(task_id: str):
+def run_task(task_id):
+    print(f"[START] task={task_id}", flush=True)
+
     rewards = []
 
-    try:
-        obs = requests.post(
-            f"{BASE_URL}/reset",
-            json={"task_id": task_id, "seed": 42}
+    obs = requests.post(
+        f"{BASE_URL}/reset",
+        json={"task_id": task_id, "seed": 42}
+    ).json()
+
+    for step in range(20):
+        action = llm_action(obs)
+
+        result = requests.post(
+            f"{BASE_URL}/step",
+            json=action
         ).json()
 
-        for _ in range(20):
-            action = llm_action(obs)
+        reward = safe_score(result.get("reward", 0.0))
+        done = result.get("done", False)
 
-            result = requests.post(
-                f"{BASE_URL}/step",
-                json=action
-            ).json()
+        rewards.append(reward)
 
-            reward = safe_score(result.get("reward", 0.0))
-            rewards.append(reward)
+        print(
+            f"[STEP] task={task_id} step={step+1} reward={reward:.6f} done={str(done).lower()}",
+            flush=True
+        )
 
-            if result.get("done", False):
-                break
+        if done:
+            break
 
-            obs = result.get("observation", {})
+        obs = result.get("observation", {})
 
-        # ---------------- FINAL NORMALIZATION ----------------
-        raw_total = sum(rewards)
+    raw_total = sum(rewards)
 
-        # squash into (0,1)
-        total = raw_total / (raw_total + 1)
+    # squash to (0,1)
+    score = raw_total / (raw_total + 1)
+    score = safe_score(score)
 
-        total = safe_score(total)
-
-    except Exception:
-        total = safe_score(0.0)
-
-    return total
+    print(
+        f"[END] task={task_id} score={score:.6f} steps={len(rewards)}",
+        flush=True
+    )
 
 
-# ---------------- MAIN ----------------
 def main():
-    final_scores = {}
-
     for task in TASK_IDS:
-        final_scores[task] = run_task(task)
-
-    # ✅ ONLY JSON OUTPUT (VERY IMPORTANT)
-    print(json.dumps(final_scores))
+        run_task(task)
 
 
 if __name__ == "__main__":
