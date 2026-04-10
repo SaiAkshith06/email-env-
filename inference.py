@@ -18,6 +18,32 @@ MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.1-8b-instant")
 TASK_IDS = ["easy", "medium", "hard"]
 
 
+# ---------------- SYSTEM PROMPT ----------------
+SYSTEM_PROMPT = """
+You are an expert customer support triage agent.
+
+Classify emails into:
+- billing (payments, invoices, refunds)
+- bug (crashes, errors, failures)
+- technical (login, account, setup issues)
+- feature (feature requests, improvements)
+- general (unclear or mixed intent)
+
+Priority:
+- urgent → system down, crash, critical failure
+- high → major issue
+- medium → normal issue
+- low → feature request
+
+Ambiguity:
+- true ONLY if unclear or mixed intent
+
+Return ONLY JSON:
+{"category":"...","priority":"...","is_ambiguous":false}
+"""
+
+
+# ---------------- SAFE SCORE ----------------
 def safe_score(x):
     EPS = 1e-6
     try:
@@ -31,37 +57,82 @@ def safe_score(x):
     return x
 
 
+# ---------------- RULE-BASED ----------------
 def rule_based(obs):
     text = (obs.get("subject", "") + " " + obs.get("body", "")).lower()
 
-    if "payment" in text or "billing" in text:
+    if any(w in text for w in ["payment", "invoice", "billing", "refund"]):
         return {"category": "billing", "priority": "high", "is_ambiguous": False}
-    if "error" in text or "bug" in text:
+
+    if any(w in text for w in ["crash", "error", "bug", "fail"]):
         return {"category": "bug", "priority": "urgent", "is_ambiguous": False}
-    if "login" in text:
+
+    if any(w in text for w in ["login", "account", "password", "access"]):
         return {"category": "technical", "priority": "high", "is_ambiguous": False}
-    if "feature" in text:
+
+    if any(w in text for w in ["feature", "request", "improve"]):
         return {"category": "feature", "priority": "low", "is_ambiguous": False}
 
-    return {"category": "general", "priority": "medium", "is_ambiguous": False}
+    ambiguous = any(w in text for w in [
+        "not sure", "maybe", "i think", "seems", "unclear"
+    ])
+
+    return {"category": "general", "priority": "medium", "is_ambiguous": ambiguous}
 
 
-def llm_action(obs):
+# ---------------- LLM ACTION ----------------
+def get_llm_action(obs):
     if client is None:
         return rule_based(obs)
+
+    user_msg = (
+        f"Subject: {obs.get('subject','')}\n"
+        f"From: {obs.get('sender','')}\n"
+        f"Body: {obs.get('body','')}\n"
+        f"Previous feedback: {obs.get('feedback','')}\n"
+        "Classify the email. Return ONLY JSON."
+    )
 
     try:
         response = client.chat.completions.create(
             model=MODEL_NAME,
-            messages=[{"role": "user", "content": str(obs)}],
-            temperature=0
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_msg}
+            ],
+            temperature=0,
+            max_tokens=100
         )
+
         text = response.choices[0].message.content.strip()
-        return json.loads(text)
-    except:
+        text = text.replace("```json", "").replace("```", "").strip()
+
+        result = json.loads(text)
+
+        # ---------------- HYBRID CORRECTION ----------------
+        rule = rule_based(obs)
+
+        if result.get("category") != rule["category"]:
+            result["category"] = rule["category"]
+
+        if result.get("priority") not in ["urgent", "high", "medium", "low"]:
+            result["priority"] = rule["priority"]
+
+        # consistency rules
+        if result["category"] == "bug":
+            result["priority"] = "urgent"
+        if result["category"] == "feature":
+            result["priority"] = "low"
+        if result["category"] == "billing":
+            result["priority"] = "high"
+
+        return result
+
+    except Exception:
         return rule_based(obs)
 
 
+# ---------------- RUN TASK ----------------
 def run_task(task_id):
     print(f"[START] task={task_id}", flush=True)
 
@@ -73,7 +144,7 @@ def run_task(task_id):
     ).json()
 
     for step in range(20):
-        action = llm_action(obs)
+        action = get_llm_action(obs)
 
         result = requests.post(
             f"{BASE_URL}/step",
@@ -97,7 +168,7 @@ def run_task(task_id):
 
     raw_total = sum(rewards)
 
-    # squash to (0,1)
+    # squash into (0,1)
     score = raw_total / (raw_total + 1)
     score = safe_score(score)
 
@@ -107,6 +178,7 @@ def run_task(task_id):
     )
 
 
+# ---------------- MAIN ----------------
 def main():
     for task in TASK_IDS:
         run_task(task)

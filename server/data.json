@@ -2,7 +2,7 @@
   {
     "email_id": "e001",
     "subject": "Payment failed",
-    "body": "My payment didn't go through when I tried to upgrade my plan. Card ending in 4242 was declined.",
+    "body": "My payment didn't go through when I tried to upgrade my plan.",
     "sender": "user1@example.com",
     "category": "billing",
     "priority": "high",
@@ -11,7 +11,7 @@
   {
     "email_id": "e002",
     "subject": "App crash on submit",
-    "body": "The app crashes every time I click the submit button on the form. I'm using Chrome 120 on Windows 11.",
+    "body": "The app crashes every time I click submit.",
     "sender": "user2@example.com",
     "category": "bug",
     "priority": "urgent",
@@ -19,8 +19,8 @@
   },
   {
     "email_id": "e003",
-    "subject": "Can you add dark mode?",
-    "body": "Would love to see a dark mode feature. It would be easier on the eyes for late-night work sessions.",
+    "subject": "Add dark mode",
+    "body": "Would love dark mode feature.",
     "sender": "user3@example.com",
     "category": "feature",
     "priority": "low",
@@ -28,8 +28,8 @@
   },
   {
     "email_id": "e004",
-    "subject": "Cannot login to my account",
-    "body": "I keep getting 'invalid credentials' even though I just reset my password five minutes ago.",
+    "subject": "Cannot login",
+    "body": "I can't login even after resetting password.",
     "sender": "user4@example.com",
     "category": "technical",
     "priority": "high",
@@ -38,7 +38,7 @@
   {
     "email_id": "e005",
     "subject": "Not sure what happened",
-    "body": "Something seems wrong with my account but I don't know what exactly. Maybe a settings change?",
+    "body": "Something seems wrong but I don't know what.",
     "sender": "user5@example.com",
     "category": "general",
     "priority": "medium",
@@ -46,8 +46,8 @@
   },
   {
     "email_id": "e006",
-    "subject": "Refund request for duplicate charge",
-    "body": "I was charged twice for the same subscription this month. Please refund the extra $29.99.",
+    "subject": "Refund request",
+    "body": "I was charged twice. Please refund.",
     "sender": "user6@example.com",
     "category": "billing",
     "priority": "high",
@@ -55,8 +55,8 @@
   },
   {
     "email_id": "e007",
-    "subject": "Dashboard not loading",
-    "body": "The analytics dashboard shows a blank page. Console errors mention a failed API call to /metrics endpoint.",
+    "subject": "Dashboard blank",
+    "body": "Dashboard is not loading properly.",
     "sender": "user7@example.com",
     "category": "bug",
     "priority": "high",
@@ -64,8 +64,8 @@
   },
   {
     "email_id": "e008",
-    "subject": "Export to PDF feature",
-    "body": "It would be great to export reports as PDF. CSV is fine but our management team prefers PDF format.",
+    "subject": "Export PDF feature",
+    "body": "Need PDF export option.",
     "sender": "user8@example.com",
     "category": "feature",
     "priority": "low",
@@ -73,8 +73,8 @@
   },
   {
     "email_id": "e009",
-    "subject": "Two-factor authentication not working",
-    "body": "The 2FA code from my authenticator app is always rejected. I've tried syncing the time on my phone.",
+    "subject": "2FA not working",
+    "body": "Authenticator code is not accepted.",
     "sender": "user9@example.com",
     "category": "technical",
     "priority": "urgent",
@@ -82,8 +82,8 @@
   },
   {
     "email_id": "e010",
-    "subject": "Invoice discrepancy",
-    "body": "My latest invoice shows $149 but my plan is the $99/month tier. Can you explain the difference?",
+    "subject": "Invoice issue",
+    "body": "Invoice amount seems incorrect.",
     "sender": "user10@example.com",
     "category": "billing",
     "priority": "medium",
@@ -91,8 +91,8 @@
   },
   {
     "email_id": "e011",
-    "subject": "Data loss after update",
-    "body": "After the latest app update, all my saved projects are gone. This is critical \u2014 I had months of work there.",
+    "subject": "Data loss",
+    "body": "All my data is gone after update.",
     "sender": "user11@example.com",
     "category": "bug",
     "priority": "urgent",
@@ -100,8 +100,8 @@
   },
   {
     "email_id": "e012",
-    "subject": "Integration with Slack",
-    "body": "Would be nice to get notifications in Slack when tasks are assigned. Any plans for a Slack integration?",
+    "subject": "Slack integration",
+    "body": "Add Slack notifications.",
     "sender": "user12@example.com",
     "category": "feature",
     "priority": "low",
@@ -109,8 +109,8 @@
   },
   {
     "email_id": "e013",
-    "subject": "Account locked out",
-    "body": "My account got locked after too many login attempts. I need to access it urgently for a client meeting.",
+    "subject": "Account locked",
+    "body": "Account locked after login attempts.",
     "sender": "user13@example.com",
     "category": "technical",
     "priority": "urgent",
@@ -118,8 +118,8 @@
   },
   {
     "email_id": "e014",
-    "subject": "I think there might be an issue",
-    "body": "The page loads slowly sometimes, or maybe it's my internet. Not sure if it's on your end or mine.",
+    "subject": "Slow performance",
+    "body": "Maybe slow due to internet or server.",
     "sender": "user14@example.com",
     "category": "general",
     "priority": "low",
@@ -127,8 +127,8 @@
   },
   {
     "email_id": "e015",
-    "subject": "Subscription auto-renewed unexpectedly",
-    "body": "I thought I cancelled last month but I was charged again. Can I get a refund for this billing cycle?",
+    "subject": "Subscription charged again",
+    "body": "I canceled but still charged.",
     "sender": "user15@example.com",
     "category": "billing",
     "priority": "high",
@@ -136,8 +136,8 @@
   },
   {
     "email_id": "e016",
-    "subject": "File upload fails silently",
-    "body": "When I try to upload a CSV file larger than 5MB, the progress bar finishes but the file doesn't appear.",
+    "subject": "Upload fails",
+    "body": "File upload not working.",
     "sender": "user16@example.com",
     "category": "bug",
     "priority": "high",
@@ -145,8 +145,8 @@
   },
   {
     "email_id": "e017",
-    "subject": "Password reset email not arriving",
-    "body": "I've requested a password reset three times but never received the email. Checked spam folder too.",
+    "subject": "Password reset issue",
+    "body": "Reset email not received.",
     "sender": "user17@example.com",
     "category": "technical",
     "priority": "high",
@@ -154,8 +154,8 @@
   },
   {
     "email_id": "e018",
-    "subject": "Question about team pricing",
-    "body": "We're a team of 15. Do you offer volume discounts? Also, do you have an annual billing option?",
+    "subject": "Pricing question",
+    "body": "Any discount for teams?",
     "sender": "user18@example.com",
     "category": "billing",
     "priority": "medium",
@@ -163,8 +163,8 @@
   },
   {
     "email_id": "e019",
-    "subject": "Maybe a bug or maybe I'm doing it wrong",
-    "body": "The search seems broken but I'm not sure if I'm using the right syntax. It used to work differently I think.",
+    "subject": "Search not working maybe",
+    "body": "Search seems broken but not sure.",
     "sender": "user19@example.com",
     "category": "general",
     "priority": "medium",
@@ -172,10 +172,55 @@
   },
   {
     "email_id": "e020",
-    "subject": "Mobile app improvements",
-    "body": "The mobile app could really use offline mode and push notifications for task deadlines. Would improve workflow a lot.",
+    "subject": "Mobile improvements",
+    "body": "Add offline mode.",
     "sender": "user20@example.com",
     "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e021",
+    "subject": "Billing confusion",
+    "body": "Not sure why I was charged.",
+    "sender": "user21@example.com",
+    "category": "billing",
+    "priority": "medium",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e022",
+    "subject": "Server error",
+    "body": "Getting 500 error repeatedly.",
+    "sender": "user22@example.com",
+    "category": "bug",
+    "priority": "urgent",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e023",
+    "subject": "Login timeout",
+    "body": "Session expires immediately.",
+    "sender": "user23@example.com",
+    "category": "technical",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e024",
+    "subject": "Feature idea",
+    "body": "Add analytics dashboard.",
+    "sender": "user24@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e025",
+    "subject": "General question",
+    "body": "How does this work?",
+    "sender": "user25@example.com",
+    "category": "general",
     "priority": "low",
     "is_ambiguous": false
   }
