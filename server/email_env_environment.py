@@ -17,8 +17,19 @@ DATA_PATH = _DOCKER_DATA_PATH if _DOCKER_DATA_PATH.exists() else _LOCAL_DATA_PAT
 
 
 def load_data():
-    with open(DATA_PATH, "r") as f:
-        return json.load(f)
+    try:
+        if not DATA_PATH.exists():
+            print(f"ERROR: Data file not found at {DATA_PATH}")
+            return []
+        with open(DATA_PATH, "r") as f:
+            data = json.load(f)
+            if not isinstance(data, list):
+                print(f"ERROR: Data format invalid, expected list, got {type(data)}")
+                return []
+            return data
+    except Exception as e:
+        print(f"ERROR loading data: {e}")
+        return []
 
 
 # ---------------- SAFE SCORE ----------------
@@ -52,13 +63,25 @@ class EmailEnvironment(Environment):
         if seed is not None:
             random.seed(seed)
 
-        self._state = EmailState()
-        self._state.init(
+        if not self.data:
+            # Emergency fallback to prevent 500
+            self.data = [{
+                "email_id": "fallback",
+                "subject": "Missing Data",
+                "body": "No data found in data.json",
+                "sender": "system",
+                "category": "general",
+                "priority": "low",
+                "is_ambiguous": False
+            }]
+
+        self._state = EmailState(
             email_queue=self.data,
             current_index=0,
             total_reward=0.0,
             done=False,
-            task_id=task_id
+            task_id=task_id,
+            reward_history=[]
         )
 
         email = self._state.email_queue[0]
@@ -70,8 +93,10 @@ class EmailEnvironment(Environment):
             sender=email["sender"],
             step_count=0,
             done=False,
-            task_id=task_id
+            task_id=task_id,
+            feedback="Environment reset successful"
         )
+
 
     # ---------------- REWARD ----------------
     def compute_reward(self, action: EmailAction, email: dict) -> float:

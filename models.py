@@ -1,6 +1,6 @@
 from typing import List
 from enum import Enum
-from pydantic import Field
+from pydantic import BaseModel, Field
 from openenv.core.env_server.types import Action, Observation
 
 
@@ -44,18 +44,13 @@ class EmailObservation(Observation):
     prev_rewards: List[float] = Field(default_factory=list)
 
 
-class EmailState:
-    def init(
-        self,
-        email_queue: List[dict],
-        current_index: int,
-        total_reward: float,
-        done: bool,
-        task_id: str
-    ):
-        self.email_queue = email_queue
-        self.current_index = current_index
-        self.total_reward = total_reward
-        self.done = done
-        self.task_id = task_id
-        self.reward_history: List[float] = []
+class EmailState(BaseModel):
+    email_queue: List[dict] = Field(default_factory=list)
+    current_index: int = Field(default=0)
+    total_reward: float = Field(default=0.0)
+    done: bool = Field(default=False)
+    task_id: str = Field(default="easy")
+    reward_history: List[float] = Field(default_factory=list)
+
+    class Config:
+        arbitrary_types_allowed = True
