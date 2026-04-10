@@ -223,5 +223,95 @@
     "category": "general",
     "priority": "low",
     "is_ambiguous": false
+  },
+  {
+    "email_id": "e026",
+    "subject": "Refund delayed",
+    "body": "My refund is still not processed after 10 days.",
+    "sender": "user26@example.com",
+    "category": "billing",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e027",
+    "subject": "App freezes",
+    "body": "The app freezes randomly.",
+    "sender": "user27@example.com",
+    "category": "bug",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e028",
+    "subject": "Login slow",
+    "body": "Login takes too long sometimes.",
+    "sender": "user28@example.com",
+    "category": "technical",
+    "priority": "medium",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e029",
+    "subject": "New feature suggestion",
+    "body": "Add multi-language support.",
+    "sender": "user29@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e030",
+    "subject": "Confusing issue",
+    "body": "Maybe login or billing issue, not sure.",
+    "sender": "user30@example.com",
+    "category": "general",
+    "priority": "medium",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e031",
+    "subject": "Payment declined",
+    "body": "My card keeps getting declined.",
+    "sender": "user31@example.com",
+    "category": "billing",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e032",
+    "subject": "Crash on launch",
+    "body": "App crashes immediately on startup.",
+    "sender": "user32@example.com",
+    "category": "bug",
+    "priority": "urgent",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e033",
+    "subject": "Account issue",
+    "body": "Something wrong with account settings.",
+    "sender": "user33@example.com",
+    "category": "technical",
+    "priority": "medium",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e034",
+    "subject": "UI improvement",
+    "body": "Improve dashboard UI.",
+    "sender": "user34@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e035",
+    "subject": "General help",
+    "body": "Need help understanding features.",
+    "sender": "user35@example.com",
+    "category": "general",
+    "priority": "low",
+    "is_ambiguous": false
   }
 ]
