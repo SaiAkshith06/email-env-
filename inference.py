@@ -18,33 +18,15 @@ MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.1-8b-instant")
 TASK_IDS = ["easy", "medium", "hard"]
 
 
-# ---------------- SYSTEM PROMPT (UPGRADED) ----------------
+# ---------------- SYSTEM PROMPT ----------------
 SYSTEM_PROMPT = """
 You are a senior customer support triage expert.
 
-Follow this reasoning internally:
-1. Identify intent
-2. Detect strong keywords
-3. Decide category
-4. Decide priority
-5. Check ambiguity
-
-CATEGORIES:
+Classify emails into:
 billing, bug, technical, feature, general
 
-PRIORITY:
-urgent = crash/data loss/system down
-high = major issue (login/payment failure)
-medium = normal issue
-low = feature request
-
-AMBIGUITY:
-true ONLY if unclear, vague, or mixed intent
-
-STRICT RULES:
-- bug → usually urgent
-- billing → usually high
-- feature → low
+Priority:
+urgent, high, medium, low
 
 Return ONLY JSON:
 {"category":"...","priority":"...","is_ambiguous":false}
@@ -81,11 +63,39 @@ def rule_based(obs):
     if any(w in text for w in ["feature", "request", "improve"]):
         return {"category": "feature", "priority": "low", "is_ambiguous": False}
 
-    ambiguous = any(w in text for w in [
-        "not sure", "maybe", "i think", "seems", "unclear"
-    ])
+    ambiguous = any(w in text for w in ["not sure", "maybe", "seems", "unclear"])
 
     return {"category": "general", "priority": "medium", "is_ambiguous": ambiguous}
+
+
+# ---------------- VALIDATION ----------------
+def validate_action(result, obs):
+    rule = rule_based(obs)
+
+    valid_categories = ["billing", "bug", "technical", "feature", "general"]
+    valid_priorities = ["urgent", "high", "medium", "low"]
+
+    # Fix category
+    if result.get("category") not in valid_categories:
+        result["category"] = rule["category"]
+
+    # Fix priority
+    if result.get("priority") not in valid_priorities:
+        result["priority"] = rule["priority"]
+
+    # Fix ambiguity
+    if "is_ambiguous" not in result:
+        result["is_ambiguous"] = rule["is_ambiguous"]
+
+    # Consistency rules
+    if result["category"] == "bug":
+        result["priority"] = "urgent"
+    elif result["category"] == "feature":
+        result["priority"] = "low"
+    elif result["category"] == "billing":
+        result["priority"] = "high"
+
+    return result
 
 
 # ---------------- LLM ACTION ----------------
@@ -95,10 +105,9 @@ def get_llm_action(obs):
 
     user_msg = (
         f"Subject: {obs.get('subject','')}\n"
-        f"From: {obs.get('sender','')}\n"
         f"Body: {obs.get('body','')}\n"
-        f"Previous feedback: {obs.get('feedback','')}\n\n"
-        "Classify this email accurately."
+        f"Feedback: {obs.get('feedback','')}\n"
+        "Return classification JSON."
     )
 
     try:
@@ -109,7 +118,7 @@ def get_llm_action(obs):
                 {"role": "user", "content": user_msg}
             ],
             temperature=0,
-            max_tokens=120
+            max_tokens=100
         )
 
         text = response.choices[0].message.content.strip()
@@ -117,31 +126,7 @@ def get_llm_action(obs):
 
         result = json.loads(text)
 
-        # ---------------- HYBRID CORRECTION ----------------
-        rule = rule_based(obs)
-
-        # fix category disagreement
-        if result.get("category") not in ["billing","bug","technical","feature","general"]:
-            result["category"] = rule["category"]
-
-        # fix priority
-        if result.get("priority") not in ["urgent","high","medium","low"]:
-            result["priority"] = rule["priority"]
-
-        # enforce consistency rules
-        if result["category"] == "bug":
-            result["priority"] = "urgent"
-        elif result["category"] == "feature":
-            result["priority"] = "low"
-        elif result["category"] == "billing":
-            result["priority"] = "high"
-
-        # ambiguity refinement
-        text_lower = (obs.get("subject","") + obs.get("body","")).lower()
-        if any(w in text_lower for w in ["maybe","not sure","seems","unclear"]):
-            result["is_ambiguous"] = True
-
-        return result
+        return validate_action(result, obs)
 
     except Exception:
         return rule_based(obs)
@@ -161,10 +146,13 @@ def run_task(task_id):
     for step in range(20):
         action = get_llm_action(obs)
 
-        result = requests.post(
-            f"{BASE_URL}/step",
-            json=action
-        ).json()
+        try:
+            result = requests.post(
+                f"{BASE_URL}/step",
+                json=action
+            ).json()
+        except Exception:
+            break
 
         reward = safe_score(result.get("reward", 0.0))
         done = result.get("done", False)
@@ -182,9 +170,7 @@ def run_task(task_id):
         obs = result.get("observation", {})
 
     raw_total = sum(rewards)
-
-    score = raw_total / (raw_total + 1)
-    score = safe_score(score)
+    score = safe_score(raw_total / (raw_total + 1))
 
     print(
         f"[END] task={task_id} score={score:.6f} steps={len(rewards)}",

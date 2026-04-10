@@ -57,9 +57,11 @@ class EmailEnvironment(Environment):
             current_index=0,
             total_reward=0.0,
             done=False,
-            task_id=task_id,
-            reward_history=[]  # important
+            task_id=task_id
         )
+
+        # FIX: initialize separately
+        self._state.reward_history = []
 
         email = self._state.email_queue[0]
 
@@ -117,14 +119,24 @@ class EmailEnvironment(Environment):
     # ---------------- STEP ----------------
     def step(self, action: EmailAction) -> Tuple[EmailObservation, float, bool, dict]:
 
+        # FIX: never return None
         if self._state.done:
-            return None, safe_score(0.0), True, {}
+            return EmailObservation(
+                email_id="",
+                subject="",
+                body="",
+                sender="",
+                step_count=self._state.current_index,
+                done=True,
+                task_id=self._state.task_id,
+                feedback="",
+                prev_rewards=self._state.reward_history
+            ), safe_score(0.0), True, {}
 
         current_email = self._state.email_queue[self._state.current_index]
 
         reward = self.compute_reward(action, current_email)
 
-        # store reward history
         self._state.reward_history.append(reward)
 
         self._state.total_reward += reward
@@ -133,7 +145,6 @@ class EmailEnvironment(Environment):
         done = self._state.current_index >= len(self._state.email_queue)
         self._state.done = done
 
-        # generate feedback
         feedback = self.generate_feedback(action, current_email, reward)
 
         if not done:

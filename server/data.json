@@ -313,5 +313,230 @@
     "category": "general",
     "priority": "low",
     "is_ambiguous": false
+  },
+  {
+    "email_id": "e036",
+    "subject": "Payment and login issue",
+    "body": "Payment failed and now I can't login.",
+    "sender": "user36@example.com",
+    "category": "general",
+    "priority": "high",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e037",
+    "subject": "Bug maybe?",
+    "body": "App behaving weird, not sure if bug.",
+    "sender": "user37@example.com",
+    "category": "general",
+    "priority": "medium",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e038",
+    "subject": "Invoice missing",
+    "body": "Didn't receive invoice this month.",
+    "sender": "user38@example.com",
+    "category": "billing",
+    "priority": "medium",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e039",
+    "subject": "Crash after update",
+    "body": "App crashes after latest update.",
+    "sender": "user39@example.com",
+    "category": "bug",
+    "priority": "urgent",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e040",
+    "subject": "Feature suggestion",
+    "body": "Add dark mode and notifications.",
+    "sender": "user40@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e041",
+    "subject": "Account issue again",
+    "body": "Login not working again.",
+    "sender": "user41@example.com",
+    "category": "technical",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e042",
+    "subject": "Payment unclear",
+    "body": "Maybe charged wrongly, not sure.",
+    "sender": "user42@example.com",
+    "category": "general",
+    "priority": "medium",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e043",
+    "subject": "Bug or feature?",
+    "body": "Not sure if this is intended or bug.",
+    "sender": "user43@example.com",
+    "category": "general",
+    "priority": "medium",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e044",
+    "subject": "Payment confirmation missing",
+    "body": "Did not receive payment confirmation.",
+    "sender": "user44@example.com",
+    "category": "billing",
+    "priority": "medium",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e045",
+    "subject": "Crash on save",
+    "body": "App crashes when saving file.",
+    "sender": "user45@example.com",
+    "category": "bug",
+    "priority": "urgent",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e046",
+    "subject": "New feature request",
+    "body": "Add calendar integration.",
+    "sender": "user46@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e047",
+    "subject": "Login weird",
+    "body": "Login behaves oddly sometimes.",
+    "sender": "user47@example.com",
+    "category": "technical",
+    "priority": "medium",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e048",
+    "subject": "General confusion",
+    "body": "Not sure how to use the app.",
+    "sender": "user48@example.com",
+    "category": "general",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e049",
+    "subject": "Billing delay",
+    "body": "Payment reflected late.",
+    "sender": "user49@example.com",
+    "category": "billing",
+    "priority": "medium",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e050",
+    "subject": "Random crash",
+    "body": "App crashes randomly.",
+    "sender": "user50@example.com",
+    "category": "bug",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e051",
+    "subject": "Feature improvement",
+    "body": "Improve notification system.",
+    "sender": "user51@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e052",
+    "subject": "Mixed issue",
+    "body": "Payment failed and app crashes.",
+    "sender": "user52@example.com",
+    "category": "general",
+    "priority": "high",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e053",
+    "subject": "Login bug",
+    "body": "Login fails sometimes.",
+    "sender": "user53@example.com",
+    "category": "technical",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e054",
+    "subject": "Billing error",
+    "body": "Charged extra amount.",
+    "sender": "user54@example.com",
+    "category": "billing",
+    "priority": "high",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e055",
+    "subject": "Crash on click",
+    "body": "Clicking button crashes app.",
+    "sender": "user55@example.com",
+    "category": "bug",
+    "priority": "urgent",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e056",
+    "subject": "Feature idea 2",
+    "body": "Add offline sync.",
+    "sender": "user56@example.com",
+    "category": "feature",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e057",
+    "subject": "General query",
+    "body": "How do I reset settings?",
+    "sender": "user57@example.com",
+    "category": "general",
+    "priority": "low",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e058",
+    "subject": "Ambiguous login",
+    "body": "Login maybe broken or I'm doing wrong.",
+    "sender": "user58@example.com",
+    "category": "general",
+    "priority": "medium",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e059",
+    "subject": "Billing help",
+    "body": "Need help understanding invoice.",
+    "sender": "user59@example.com",
+    "category": "billing",
+    "priority": "medium",
+    "is_ambiguous": false
+  },
+  {
+    "email_id": "e060",
+    "subject": "Final crash",
+    "body": "App crashes frequently.",
+    "sender": "user60@example.com",
+    "category": "bug",
+    "priority": "high",
+    "is_ambiguous": false
   }
 ]
