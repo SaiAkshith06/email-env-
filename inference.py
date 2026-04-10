@@ -18,25 +18,33 @@ MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.1-8b-instant")
 TASK_IDS = ["easy", "medium", "hard"]
 
 
-# ---------------- SYSTEM PROMPT ----------------
+# ---------------- SYSTEM PROMPT (UPGRADED) ----------------
 SYSTEM_PROMPT = """
-You are an expert customer support triage agent.
+You are a senior customer support triage expert.
 
-Classify emails into:
-- billing (payments, invoices, refunds)
-- bug (crashes, errors, failures)
-- technical (login, account, setup issues)
-- feature (feature requests, improvements)
-- general (unclear or mixed intent)
+Follow this reasoning internally:
+1. Identify intent
+2. Detect strong keywords
+3. Decide category
+4. Decide priority
+5. Check ambiguity
 
-Priority:
-- urgent → system down, crash, critical failure
-- high → major issue
-- medium → normal issue
-- low → feature request
+CATEGORIES:
+billing, bug, technical, feature, general
 
-Ambiguity:
-- true ONLY if unclear or mixed intent
+PRIORITY:
+urgent = crash/data loss/system down
+high = major issue (login/payment failure)
+medium = normal issue
+low = feature request
+
+AMBIGUITY:
+true ONLY if unclear, vague, or mixed intent
+
+STRICT RULES:
+- bug → usually urgent
+- billing → usually high
+- feature → low
 
 Return ONLY JSON:
 {"category":"...","priority":"...","is_ambiguous":false}
@@ -89,8 +97,8 @@ def get_llm_action(obs):
         f"Subject: {obs.get('subject','')}\n"
         f"From: {obs.get('sender','')}\n"
         f"Body: {obs.get('body','')}\n"
-        f"Previous feedback: {obs.get('feedback','')}\n"
-        "Classify the email. Return ONLY JSON."
+        f"Previous feedback: {obs.get('feedback','')}\n\n"
+        "Classify this email accurately."
     )
 
     try:
@@ -101,7 +109,7 @@ def get_llm_action(obs):
                 {"role": "user", "content": user_msg}
             ],
             temperature=0,
-            max_tokens=100
+            max_tokens=120
         )
 
         text = response.choices[0].message.content.strip()
@@ -112,19 +120,26 @@ def get_llm_action(obs):
         # ---------------- HYBRID CORRECTION ----------------
         rule = rule_based(obs)
 
-        if result.get("category") != rule["category"]:
+        # fix category disagreement
+        if result.get("category") not in ["billing","bug","technical","feature","general"]:
             result["category"] = rule["category"]
 
-        if result.get("priority") not in ["urgent", "high", "medium", "low"]:
+        # fix priority
+        if result.get("priority") not in ["urgent","high","medium","low"]:
             result["priority"] = rule["priority"]
 
-        # consistency rules
+        # enforce consistency rules
         if result["category"] == "bug":
             result["priority"] = "urgent"
-        if result["category"] == "feature":
+        elif result["category"] == "feature":
             result["priority"] = "low"
-        if result["category"] == "billing":
+        elif result["category"] == "billing":
             result["priority"] = "high"
+
+        # ambiguity refinement
+        text_lower = (obs.get("subject","") + obs.get("body","")).lower()
+        if any(w in text_lower for w in ["maybe","not sure","seems","unclear"]):
+            result["is_ambiguous"] = True
 
         return result
 
@@ -168,7 +183,6 @@ def run_task(task_id):
 
     raw_total = sum(rewards)
 
-    # squash into (0,1)
     score = raw_total / (raw_total + 1)
     score = safe_score(score)
 
