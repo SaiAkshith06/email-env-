@@ -52,16 +52,14 @@ class EmailEnvironment(Environment):
         if seed is not None:
             random.seed(seed)
 
-        self._state = EmailState(
+        self._state = EmailState()
+        self._state.init(
             email_queue=self.data,
             current_index=0,
             total_reward=0.0,
             done=False,
             task_id=task_id
         )
-
-        # FIX: initialize separately
-        self._state.reward_history = []
 
         email = self._state.email_queue[0]
 
@@ -72,9 +70,7 @@ class EmailEnvironment(Environment):
             sender=email["sender"],
             step_count=0,
             done=False,
-            task_id=task_id,
-            feedback="",
-            prev_rewards=[]
+            task_id=task_id
         )
 
     # ---------------- REWARD ----------------
@@ -119,7 +115,6 @@ class EmailEnvironment(Environment):
     # ---------------- STEP ----------------
     def step(self, action: EmailAction) -> Tuple[EmailObservation, float, bool, dict]:
 
-        # FIX: never return None
         if self._state.done:
             return EmailObservation(
                 email_id="",
