@@ -35,7 +35,6 @@ server = "email_env.server.app:main"
 
 [tool.setuptools]
 include-package-data = true
-packages = find_namespace:
 
 [tool.setuptools.packages.find]
 where = ["."]
