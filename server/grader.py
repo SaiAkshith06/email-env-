@@ -94,7 +94,7 @@ def grade_hard(action, email) -> float:
         "general": ["question", "help", "info", "inquiry"],
     }
 
-    kws = category_keywords.get(str(action.category), [])
+    kws = category_keywords.get(email["category"], [])
 
     if any(kw in body for kw in kws):
         score += 0.15

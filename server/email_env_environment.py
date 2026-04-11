@@ -56,8 +56,11 @@ class EmailEnvironment(Environment):
         if seed is not None:
             random.seed(seed)
 
+        shuffled = self.data.copy()
+        random.shuffle(shuffled)
+
         if not self.data:
-            self.data = [{
+            shuffled = [{
                 "email_id": "fallback",
                 "subject": "Missing Data",
                 "body": "No data found",
@@ -68,7 +71,7 @@ class EmailEnvironment(Environment):
             }]
 
         self._state = EmailState(
-            email_queue=self.data,
+            email_queue=shuffled,
             current_index=0,
             total_reward=0.0,
             done=False,

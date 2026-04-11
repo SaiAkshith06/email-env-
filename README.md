@@ -88,3 +88,11 @@ Email Input → Hybrid Agent (LLM + Rules) → Environment → Feedback → Grad
 ```bash
 uvicorn server.app:app --reload
 ```
+
+## Try It Now
+
+```bash
+curl -X POST https://saiakshith06-email-env-v2.hf.space/reset \
+     -H "Content-Type: application/json" \
+     -d '{"task_id": "easy", "seed": 42}'
+```

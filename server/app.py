@@ -13,6 +13,17 @@ print("--- INITIALIZING EMAIL ENVIRONMENT V2 (60 EMAILS) ---")
 env = EmailEnvironment()
 
 
+@app.get("/tasks")
+def get_tasks():
+    return {
+        "tasks": [
+            {"id": "easy", "description": "Predict category only"},
+            {"id": "medium", "description": "Predict category + priority"},
+            {"id": "hard", "description": "Predict category + priority + ambiguity"}
+        ]
+    }
+
+
 # ✅ Request model for reset
 class ResetRequest(BaseModel):
     task_id: str = "easy"
