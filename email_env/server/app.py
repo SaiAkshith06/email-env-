@@ -54,32 +54,39 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"error": str(exc), "traceback": traceback.format_exc()},
     )
 
-# ✅ RESET endpoint (deterministic + configurable)
+# ✅ RESET endpoint (absolute resilience)
 @app.post("/reset")
-def reset(req: dict = None):
+async def reset(request: Request):
     try:
+        # 1. Be extremely lenient with input format
+        try:
+            req = await request.json()
+        except:
+            req = {}
+            
         print(f"--- RESET REQUEST RECEIVED: {req} ---")
         
-        task_id = "easy"
-        seed = None
-        
-        if req and isinstance(req, dict):
-            task_id = req.get("task_id") or req.get("task") or "easy"
-            seed = req.get("seed")
+        # 2. Extract params with fallbacks
+        task_id = req.get("task_id") or req.get("task") or "easy"
+        seed = req.get("seed")
 
+        # 3. Call environment reset
         obs = env.reset(task_id=task_id, seed=seed)
         
-        # Return both formats to be safe
+        # 4. Return the observation at the root (OpenEnv standard)
+        # We also include 'observation' key for safety
+        obs_dict = obs.dict()
         return {
-            "observation": obs,
-            "status": "success",
-            # Inject flat fields as well for clients expecting direct observation
-            **obs.dict() 
+            **obs_dict,
+            "observation": obs_dict
         }
     except Exception as e:
         print(f"--- RESET FAILED: {e} ---")
         traceback.print_exc()
-        raise e
+        return JSONResponse(
+            status_code=500,
+            content={"error": str(e), "traceback": traceback.format_exc()}
+        )
 
 
 # ✅ STEP endpoint (safe handling)
