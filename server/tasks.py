@@ -13,5 +13,10 @@ TASKS = {
         "name": "Full Classification",
         "description": "Category + Priority + Ambiguity detection",
         "difficulty": "hard"
+    },
+    "super": {
+        "name": "Full Classification + Efficiency",
+        "description": "Category + Priority + Ambiguity, penalised for overusing investigation",
+        "difficulty": "super"
     }
 }

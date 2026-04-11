@@ -7,7 +7,7 @@ from pathlib import Path
 from openenv.core.env_server.interfaces import Environment
 
 from models import EmailAction, EmailObservation, EmailState, ActionType
-from server.grader import grade_easy, grade_medium, grade_hard
+from server.grader import grade_easy, grade_medium, grade_hard, grade_super
 
 
 _DOCKER_DATA_PATH = Path("/app/env/server/data.json")
@@ -79,7 +79,8 @@ class EmailEnvironment(Environment):
             done=False,
             task_id=task_id,
             reward_history=[],
-            current_email_investigated=False
+            current_email_investigated=False,
+            current_email_investigate_count=0
         )
 
         email = self._state.email_queue[0]
@@ -104,6 +105,8 @@ class EmailEnvironment(Environment):
             score = grade_medium(action, email)
         elif task == "hard":
             score = grade_hard(action, email)
+        elif task == "super":
+            score = grade_super(action, email, self._state.current_email_investigate_count)
         else:
             score = 0.0
 
@@ -158,6 +161,7 @@ class EmailEnvironment(Environment):
         if action.action_type == ActionType.INVESTIGATE:
             hint = self._generate_hint(current_email, action.query)
             self._state.current_email_investigated = True
+            self._state.current_email_investigate_count += 1
             
             obs = EmailObservation(
                 email_id=current_email["email_id"],
@@ -179,6 +183,7 @@ class EmailEnvironment(Environment):
         self._state.total_reward += reward
         self._state.current_index += 1
         self._state.current_email_investigated = False # reset for next email
+        self._state.current_email_investigate_count = 0
 
         done = self._state.current_index >= len(self._state.email_queue)
         self._state.done = done

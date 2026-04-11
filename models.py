@@ -64,6 +64,7 @@ class EmailState(BaseModel):
     task_id: str = Field(default="easy")
     reward_history: List[float] = Field(default_factory=list)
     current_email_investigated: bool = Field(default=False)
+    current_email_investigate_count: int = Field(default=0)
 
     class Config:
         arbitrary_types_allowed = True

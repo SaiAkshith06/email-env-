@@ -104,3 +104,15 @@ def grade_hard(action, email) -> float:
         score = 0.0
 
     return safe_score(score)
+
+
+# ---------------- SUPER ----------------
+def grade_super(action, email, investigate_count=0) -> float:
+    # Start with hard score
+    score = float(grade_hard(action, email))
+    
+    # Penalise for using investigate more than once per email
+    if investigate_count > 1:
+        score -= 0.1 * (investigate_count - 1)
+        
+    return safe_score(max(0.0, score))

@@ -104,3 +104,24 @@ curl https://saiakshith06-email-env-v2.hf.space/metrics
 ```bash
 uvicorn server.app:app --reload --port 7860
 ```
+
+---
+
+## Multi-Step Investigation
+
+Unlike simple classifiers, this environment supports a two-phase agent loop:
+
+**Phase 1 — Investigate (optional)**
+The agent can request a hint before classifying:
+```json
+{"action_type": "investigate", "query": "What is the priority of this email?"}
+```
+Returns a hint in `observation.feedback` with zero reward. Limited to 1 use per email for full reward; over-investigation on "super" difficulty results in efficiency penalties.
+
+**Phase 2 — Classify**
+```json
+{"action_type": "classify", "category": "billing", "priority": "high", "is_ambiguous": true}
+```
+Returns the reward based on task difficulty.
+
+This creates a genuine explore-exploit tradeoff: spending a step to investigate reduces uncertainty but costs time. Agents that learn when to investigate vs. classify directly score higher than pure classifiers.

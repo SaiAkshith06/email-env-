@@ -15,7 +15,7 @@ except Exception:
 
 MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.1-8b-instant")
 
-TASK_IDS = ["easy", "medium", "hard"]
+TASK_IDS = ["easy", "medium", "hard", "super"]
 
 BENCHMARK = "email_triage_env"
 SUCCESS_THRESHOLD = 0.6
@@ -61,11 +61,13 @@ def rule_based(obs):
         return {"category": "technical", "priority": "high", "is_ambiguous": False}
 
     if any(w in text for w in ["feature", "request", "improve"]):
-        return {"category": "feature", "priority": "low", "is_ambiguous": False}
-
-    ambiguous = any(w in text for w in ["not sure", "maybe", "seems", "unclear"])
-
-    return {"category": "general", "priority": "medium", "is_ambiguous": ambiguous}
+        res = {"category": "feature", "priority": "low", "is_ambiguous": False}
+    else:
+        ambiguous = any(w in text for w in ["not sure", "maybe", "seems", "unclear"])
+        res = {"category": "general", "priority": "medium", "is_ambiguous": ambiguous}
+        
+    res["action_type"] = "classify"
+    return res
 
 
 def validate_action(result, obs):
@@ -87,6 +89,24 @@ def validate_action(result, obs):
 
 
 def get_llm_action(obs):
+    feedback = obs.get("feedback", "")
+    investigate_used = obs.get("investigate_used", False)
+
+    # If we haven't investigated yet and the email looks tricky, investigate first
+    body = obs.get("body", "").lower()
+    subject = obs.get("subject", "").lower()
+    looks_ambiguous = any(w in body + subject for w in ["not sure", "maybe", "unclear", "seems", "think", "either"])
+
+    if looks_ambiguous and not investigate_used and client is not None:
+        return {
+            "action_type": "investigate",
+            "query": "Is this ambiguous? What is the category?",
+            "category": None,
+            "priority": None,
+            "is_ambiguous": False
+        }
+
+    # Otherwise classify normally
     if client is None:
         return rule_based(obs)
 
@@ -112,8 +132,10 @@ def get_llm_action(obs):
         text = text.replace("```json", "").replace("```", "").strip()
 
         result = json.loads(text)
+        result = validate_action(result, obs)
+        result["action_type"] = "classify"
 
-        return validate_action(result, obs)
+        return result
 
     except Exception:
         return rule_based(obs)
