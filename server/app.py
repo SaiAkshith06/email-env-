@@ -9,7 +9,7 @@ from email_env.models import EmailAction
 app = FastAPI()
 
 # create env
-print("--- INITIALIZING EMAIL ENVIRONMENT V5 (20 EMAILS) ---")
+print("--- INITIALIZING EMAIL ENVIRONMENT V2 (60 EMAILS) ---")
 env = EmailEnvironment()
 
 

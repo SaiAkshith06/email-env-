@@ -150,7 +150,7 @@ def run_task(task_id):
         action_str = json.dumps(action, separators=(",", ":"))
 
         print(
-            f"[STEP] step={step} action={action_str} reward={reward:.4f} done={str(done).lower()} error={error}",
+            f"[STEP] step={step} action={action_str} reward={reward:.4f} done={str(done).lower()} error={error or 'null'}",
             flush=True
         )
 
