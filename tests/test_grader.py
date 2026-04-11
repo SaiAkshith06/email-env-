@@ -1,7 +1,7 @@
 from email_env.models import EmailAction, Category, Priority
 from email_env.server.grader import grade_easy, grade_medium, grade_hard, safe_score
 
-EMAIL = {"email_id":"t1","subject":"Payment failed","body":"My card was declined trying to upgrade my plan last night. Please help!","sender":"u@e.com","category":"billing","priority":"high","is_ambiguous":False}
+EMAIL = {"email_id":"t1","subject":"Payment failed","body":"My payment was declined trying to upgrade my billing plan last night. Please help!","sender":"u@e.com","category":"billing","priority":"high","is_ambiguous":False}
 
 def test_easy_correct():
     a = EmailAction(category=Category.BILLING, priority=Priority.HIGH, is_ambiguous=False)
@@ -22,7 +22,7 @@ def test_medium_partial():
 
 def test_hard_full():
     a = EmailAction(category=Category.BILLING, priority=Priority.HIGH, is_ambiguous=False)
-    assert grade_hard(a, EMAIL) > 0.85
+    assert grade_hard(a, EMAIL) > 0.9
 
 def test_safe_score():
     assert safe_score(-1) > 0
