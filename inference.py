@@ -52,22 +52,20 @@ def rule_based(obs):
     text = (obs.get("subject", "") + " " + obs.get("body", "")).lower()
 
     if any(w in text for w in ["payment", "invoice", "billing", "refund"]):
-        return {"category": "billing", "priority": "high", "is_ambiguous": False}
+        return {"action_type": "classify", "category": "billing", "priority": "high", "is_ambiguous": False}
 
     if any(w in text for w in ["crash", "error", "bug", "fail"]):
-        return {"category": "bug", "priority": "urgent", "is_ambiguous": False}
+        return {"action_type": "classify", "category": "bug", "priority": "urgent", "is_ambiguous": False}
 
     if any(w in text for w in ["login", "account", "password", "access"]):
-        return {"category": "technical", "priority": "high", "is_ambiguous": False}
+        return {"action_type": "classify", "category": "technical", "priority": "high", "is_ambiguous": False}
 
     if any(w in text for w in ["feature", "request", "improve"]):
-        res = {"category": "feature", "priority": "low", "is_ambiguous": False}
-    else:
-        ambiguous = any(w in text for w in ["not sure", "maybe", "seems", "unclear"])
-        res = {"category": "general", "priority": "medium", "is_ambiguous": ambiguous}
-        
-    res["action_type"] = "classify"
-    return res
+        return {"action_type": "classify", "category": "feature", "priority": "low", "is_ambiguous": False}
+
+    ambiguous = any(w in text for w in ["not sure", "maybe", "seems", "unclear"])
+
+    return {"action_type": "classify", "category": "general", "priority": "medium", "is_ambiguous": ambiguous}
 
 
 def validate_action(result, obs):
