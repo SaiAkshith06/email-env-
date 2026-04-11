@@ -1,7 +1,7 @@
 [
   {
     "email_id": "e001",
-    "subject": "Billing Urgent Subject",
+    "subject": "Final notice: account suspension due to unpaid invoice",
     "body": "CRITICAL: Final notice before account suspension due to unpaid invoice #9928. Please resolve immediately.",
     "sender": "user1@example.com",
     "category": "billing",
@@ -10,7 +10,7 @@
   },
   {
     "email_id": "e002",
-    "subject": "Billing Urgent Subject",
+    "subject": "Double charge detected for annual subscription tier",
     "body": "URGENT: Duplicate charge detected on my credit card for the annual subscription. This is unacceptable.",
     "sender": "user2@example.com",
     "category": "billing",
@@ -19,16 +19,16 @@
   },
   {
     "email_id": "e003",
-    "subject": "Billing Urgent Subject",
+    "subject": "Plan downgraded unexpectedly while working",
     "body": "My plan was downgraded unexpectedly despite having an active subscription. This is blocking our entire team.",
     "sender": "user3@example.com",
     "category": "billing",
     "priority": "urgent",
-    "is_ambiguous": false
+    "is_ambiguous": true
   },
   {
     "email_id": "e004",
-    "subject": "Billing High Subject",
+    "subject": "Payment portal failing during plan upgrade",
     "body": "Payment failed for the third time this week. I need to update my billing information but the portal is slow.",
     "sender": "user4@example.com",
     "category": "billing",
@@ -37,7 +37,7 @@
   },
   {
     "email_id": "e005",
-    "subject": "Billing High Subject",
+    "subject": "Invoice discrepancy for cancelled service",
     "body": "I received an invoice for a service I already cancelled last month. Please investigate this discrepancy.",
     "sender": "user5@example.com",
     "category": "billing",
@@ -46,7 +46,7 @@
   },
   {
     "email_id": "e006",
-    "subject": "Billing High Subject",
+    "subject": "Request for accidental double billing refund",
     "body": "Requesting a refund for the accidental double billing on my account from yesterday's transaction.",
     "sender": "user6@example.com",
     "category": "billing",
@@ -55,7 +55,7 @@
   },
   {
     "email_id": "e007",
-    "subject": "Billing Medium Subject",
+    "subject": "Question regarding sales tax on receipt #5521",
     "body": "I have a question regarding the sales tax applied to my most recent receipt #5521. Is this correct?",
     "sender": "user7@example.com",
     "category": "billing",
@@ -64,7 +64,7 @@
   },
   {
     "email_id": "e008",
-    "subject": "Billing Medium Subject",
+    "subject": "Enterprise plan renewal cost breakdown request",
     "body": "Can you provide a detailed breakdown of the upcoming renewal costs for our enterprise plan?",
     "sender": "user8@example.com",
     "category": "billing",
@@ -73,7 +73,7 @@
   },
   {
     "email_id": "e009",
-    "subject": "Billing Medium Subject",
+    "subject": "Changing primary credit card for next cycle",
     "body": "Need to change the primary credit card on file for our monthly billing cycle starting next week.",
     "sender": "user9@example.com",
     "category": "billing",
@@ -82,7 +82,7 @@
   },
   {
     "email_id": "e010",
-    "subject": "Billing Low Subject",
+    "subject": "Invoice request for tax audit records",
     "body": "Would it be possible to get an invoice for last year's subscription for our tax audit records?",
     "sender": "user10@example.com",
     "category": "billing",
@@ -91,7 +91,7 @@
   },
   {
     "email_id": "e011",
-    "subject": "Billing Low Subject",
+    "subject": "Loyalty discount inquiry for upcoming upgrade",
     "body": "I am considering upgrading our plan next quarter and want to know about any available loyalty discounts.",
     "sender": "user11@example.com",
     "category": "billing",
@@ -100,7 +100,7 @@
   },
   {
     "email_id": "e012",
-    "subject": "Billing Low Subject",
+    "subject": "Wire transfer payment option confirmation",
     "body": "Just wanted to confirm if you accept wire transfers for the annual payments instead of credit cards.",
     "sender": "user12@example.com",
     "category": "billing",
@@ -109,7 +109,7 @@
   },
   {
     "email_id": "e013",
-    "subject": "Bug Urgent Subject",
+    "subject": "Production dashboard blank for all APAC users",
     "body": "The production dashboard is completely blank for all users in the APAC region. This is a P0 issue.",
     "sender": "user13@example.com",
     "category": "bug",
@@ -118,7 +118,7 @@
   },
   {
     "email_id": "e014",
-    "subject": "Bug Urgent Subject",
+    "subject": "App crashes on 'Finalize Report' button click",
     "body": "The application crashes every single time I try to click the 'Finalize Report' button. We can't work.",
     "sender": "user14@example.com",
     "category": "bug",
@@ -127,16 +127,16 @@
   },
   {
     "email_id": "e015",
-    "subject": "Bug Urgent Subject",
+    "subject": "Data missing after latest platform update",
     "body": "Data corruption detected: several entries from our database seem to have vanished after the last update.",
     "sender": "user15@example.com",
     "category": "bug",
     "priority": "urgent",
-    "is_ambiguous": false
+    "is_ambiguous": true
   },
   {
     "email_id": "e016",
-    "subject": "Bug High Subject",
+    "subject": "500 Internal Server Error on large file upload",
     "body": "The file upload system returns a 500 Internal Server Error when processing files larger than 5MB.",
     "sender": "user16@example.com",
     "category": "bug",
@@ -145,16 +145,16 @@
   },
   {
     "email_id": "e017",
-    "subject": "Bug High Subject",
+    "subject": "Search results not showing newly created items",
     "body": "Search results are not showing newly created items, causing confusion for our operations team.",
     "sender": "user17@example.com",
     "category": "bug",
     "priority": "high",
-    "is_ambiguous": false
+    "is_ambiguous": true
   },
   {
     "email_id": "e018",
-    "subject": "Bug High Subject",
+    "subject": "Delete action fails on user management page",
     "body": "The 'Delete' action on the user management page is not working, even when I have admin permissions.",
     "sender": "user18@example.com",
     "category": "bug",
@@ -163,7 +163,7 @@
   },
   {
     "email_id": "e019",
-    "subject": "Bug Medium Subject",
+    "subject": "UI elements overlapping on mobile landscape view",
     "body": "The UI elements are overlapping on mobile devices when viewing the analytics chart in landscape mode.",
     "sender": "user19@example.com",
     "category": "bug",
@@ -172,7 +172,7 @@
   },
   {
     "email_id": "e020",
-    "subject": "Bug Medium Subject",
+    "subject": "Grammatical error in new user welcome email",
     "body": "There is a grammatical error in the welcome email sent to new users, which looks unprofessional.",
     "sender": "user20@example.com",
     "category": "bug",
@@ -181,7 +181,7 @@
   },
   {
     "email_id": "e021",
-    "subject": "Bug Medium Subject",
+    "subject": "Date sorting on activity page returning alpha results",
     "body": "Sorting by date on the activities page is not working correctly; it seems to be sorting alphabetically.",
     "sender": "user21@example.com",
     "category": "bug",
@@ -190,7 +190,7 @@
   },
   {
     "email_id": "e022",
-    "subject": "Bug Low Subject",
+    "subject": "Safari tooltip misalignment in settings",
     "body": "The tooltip on the settings icon is slightly misaligned by a few pixels on the Safari browser.",
     "sender": "user22@example.com",
     "category": "bug",
@@ -199,7 +199,7 @@
   },
   {
     "email_id": "e023",
-    "subject": "Bug Low Subject",
+    "subject": "Spelling mistake in documentation footer",
     "body": "A minor spelling mistake in the documentation's footer section needs to be corrected in the next release.",
     "sender": "user23@example.com",
     "category": "bug",
@@ -208,7 +208,7 @@
   },
   {
     "email_id": "e024",
-    "subject": "Bug Low Subject",
+    "subject": "Secondary button hover inconsistent",
     "body": "The hover effect on secondary buttons is inconsistent between the home page and the dashboard.",
     "sender": "user24@example.com",
     "category": "bug",
@@ -217,7 +217,7 @@
   },
   {
     "email_id": "e025",
-    "subject": "Technical Urgent Subject",
+    "subject": "Completely locked out - 2FA not sending codes",
     "body": "I'm completely locked out of my account and 2FA is not sending any codes to my registered phone.",
     "sender": "user25@example.com",
     "category": "technical",
@@ -226,7 +226,7 @@
   },
   {
     "email_id": "e026",
-    "subject": "Technical Urgent Subject",
+    "subject": "API integration failing across production envs",
     "body": "The API integration is failing with 'Connection Refused' across all our production environments today.",
     "sender": "user26@example.com",
     "category": "technical",
@@ -235,7 +235,7 @@
   },
   {
     "email_id": "e027",
-    "subject": "Technical Urgent Subject",
+    "subject": "Potential security vulnerability in search endpoint",
     "body": "Security vulnerability report: Found a potential SQL injection vulnerability in the search endpoint.",
     "sender": "user27@example.com",
     "category": "technical",
@@ -244,7 +244,7 @@
   },
   {
     "email_id": "e028",
-    "subject": "Technical High Subject",
+    "subject": "Performance degradation: Dashboard loading > 30s",
     "body": "Performance degradation: It takes over 30 seconds to load the main dashboard page since this morning.",
     "sender": "user28@example.com",
     "category": "technical",
@@ -253,17 +253,17 @@
   },
   {
     "email_id": "e029",
-    "subject": "Technical High Subject",
-    "body": "Our custom Webhook integration stopped receiving events from your platform about two hours ago.",
+    "subject": "SSO Okta login failing for all employees",
+    "body": "The SSO login via Okta is failing with an invalid SAML token error for all our employees.",
     "sender": "user29@example.com",
     "category": "technical",
     "priority": "high",
-    "is_ambiguous": false
+    "is_ambiguous": true
   },
   {
     "email_id": "e030",
-    "subject": "Technical High Subject",
-    "body": "The SSO login via Okta is failing with an invalid SAML token error for all our employees.",
+    "subject": "Custom Webhook integration stopped receiving events",
+    "body": "Our custom Webhook integration stopped receiving events from your platform about two hours ago.",
     "sender": "user30@example.com",
     "category": "technical",
     "priority": "high",
@@ -271,7 +271,7 @@
   },
   {
     "email_id": "e031",
-    "subject": "Technical Medium Subject",
+    "subject": "SMTP configuration for notification system",
     "body": "I need help configuring the SMTP settings for the automated notification system on our custom domain.",
     "sender": "user31@example.com",
     "category": "technical",
@@ -280,7 +280,7 @@
   },
   {
     "email_id": "e032",
-    "subject": "Technical Medium Subject",
+    "subject": "OAuth2 support for newer REST API endpoints",
     "body": "Does your platform support OAuth2 authentication for the newer REST API endpoints we're building?",
     "sender": "user32@example.com",
     "category": "technical",
@@ -289,7 +289,7 @@
   },
   {
     "email_id": "e033",
-    "subject": "Technical Medium Subject",
+    "subject": "API rate limiting differences between tiers",
     "body": "Can you explain the difference in rate limiting between the free tier and the professional tier APIs?",
     "sender": "user33@example.com",
     "category": "technical",
@@ -298,7 +298,7 @@
   },
   {
     "email_id": "e034",
-    "subject": "Technical Low Subject",
+    "subject": "Database export format specs for data lake",
     "body": "Looking for the technical specifications of your database export format for our internal data lake.",
     "sender": "user34@example.com",
     "category": "technical",
@@ -307,7 +307,7 @@
   },
   {
     "email_id": "e035",
-    "subject": "Technical Low Subject",
+    "subject": "Programmatic session token refresh inquiry",
     "body": "Is there a way to programmatically refresh the session token without a full user re-authentication?",
     "sender": "user35@example.com",
     "category": "technical",
@@ -316,7 +316,7 @@
   },
   {
     "email_id": "e036",
-    "subject": "Technical Low Subject",
+    "subject": "TLS version support for load balancer compliance",
     "body": "Requesting more details on the TLS versions supported by your load balancers for compliance reasons.",
     "sender": "user36@example.com",
     "category": "technical",
@@ -325,7 +325,7 @@
   },
   {
     "email_id": "e037",
-    "subject": "Feature Urgent Subject",
+    "subject": "Need CSV export for regulatory compliance audit tomorrow",
     "body": "We need a way to export data in CSV format by tomorrow morning for our regulatory compliance audit.",
     "sender": "user37@example.com",
     "category": "feature",
@@ -334,7 +334,7 @@
   },
   {
     "email_id": "e038",
-    "subject": "Feature Urgent Subject",
+    "subject": "GDPR 'Delete All' functionality immediate request",
     "body": "Our client requires a 'Delete All' functionality immediately to comply with new GDPR requests.",
     "sender": "user38@example.com",
     "category": "feature",
@@ -343,16 +343,16 @@
   },
   {
     "email_id": "e039",
-    "subject": "Feature Urgent Subject",
+    "subject": "Read-only role for upcoming security audit",
     "body": "The lack of a 'Read-only' role is a dealbreaker for our upcoming security audit next Tuesday.",
     "sender": "user39@example.com",
     "category": "feature",
     "priority": "urgent",
-    "is_ambiguous": false
+    "is_ambiguous": true
   },
   {
     "email_id": "e040",
-    "subject": "Feature High Subject",
+    "subject": "Dark mode support for late-night teams",
     "body": "Could you please add support for dark mode? Many of our users work late at night and it's a major pain point.",
     "sender": "user40@example.com",
     "category": "feature",
@@ -361,7 +361,7 @@
   },
   {
     "email_id": "e041",
-    "subject": "Feature High Subject",
+    "subject": "Slack integration for real-time project updates",
     "body": "A Slack integration would be incredible for our team to keep track of real-time project updates.",
     "sender": "user41@example.com",
     "category": "feature",
@@ -370,7 +370,7 @@
   },
   {
     "email_id": "e042",
-    "subject": "Feature High Subject",
+    "subject": "Bulk-editing tool for task management system",
     "body": "We desperately need a bulk-editing tool for the task management system to handle large project loads.",
     "sender": "user42@example.com",
     "category": "feature",
@@ -379,7 +379,7 @@
   },
   {
     "email_id": "e043",
-    "subject": "Feature Medium Subject",
+    "subject": "Calendar view for project module deadlines",
     "body": "It would be very helpful to have a calendar view for the upcoming deadlines in the project module.",
     "sender": "user43@example.com",
     "category": "feature",
@@ -388,7 +388,7 @@
   },
   {
     "email_id": "e044",
-    "subject": "Feature Medium Subject",
+    "subject": "Android mobile application availability",
     "body": "Are there any plans to add a mobile application for Android users? Our field team would love it.",
     "sender": "user44@example.com",
     "category": "feature",
@@ -397,16 +397,16 @@
   },
   {
     "email_id": "e045",
-    "subject": "Feature Medium Subject",
+    "subject": "Dashboard widget customization for metrics",
     "body": "Could you add the ability to customize the dashboard widgets to show different performance metrics?",
     "sender": "user45@example.com",
     "category": "feature",
     "priority": "medium",
-    "is_ambiguous": false
+    "is_ambiguous": true
   },
   {
     "email_id": "e046",
-    "subject": "Feature Low Subject",
+    "subject": "Workspace theme background color options",
     "body": "It might be nice to change the background color of the workspace to several preset themes for personalization.",
     "sender": "user46@example.com",
     "category": "feature",
@@ -415,7 +415,7 @@
   },
   {
     "email_id": "e047",
-    "subject": "Feature Low Subject",
+    "subject": "Ability to favorite certain projects",
     "body": "A small feature to 'Favorite' certain projects for easier access would be a great quality-of-life add.",
     "sender": "user47@example.com",
     "category": "feature",
@@ -424,7 +424,7 @@
   },
   {
     "email_id": "e048",
-    "subject": "Feature Low Subject",
+    "subject": "Emoji support in comment section",
     "body": "Adding more emojis to the comment section would make the platform feel more modern and engaging.",
     "sender": "user48@example.com",
     "category": "feature",
@@ -433,7 +433,7 @@
   },
   {
     "email_id": "e049",
-    "subject": "General Urgent Subject",
+    "subject": "Suspicious unauthorized activity in our audit logs",
     "body": "I suspect our account has been compromised as I see unauthorized activity in the audit logs. Help!",
     "sender": "user49@example.com",
     "category": "general",
@@ -442,16 +442,16 @@
   },
   {
     "email_id": "e050",
-    "subject": "General Urgent Subject",
+    "subject": "Missing legal agreement in portal portal",
     "body": "I cannot find our legal agreement anywhere in the portal. I need it for a meeting in 10 minutes.",
     "sender": "user50@example.com",
     "category": "general",
     "priority": "urgent",
-    "is_ambiguous": false
+    "is_ambiguous": true
   },
   {
     "email_id": "e051",
-    "subject": "General Urgent Subject",
+    "subject": "Inappropriate content removal on public board",
     "body": "A user is posting inappropriate content on our public board and I need to know how to ban them immediately.",
     "sender": "user51@example.com",
     "category": "general",
@@ -460,7 +460,7 @@
   },
   {
     "email_id": "e052",
-    "subject": "General High Subject",
+    "subject": "Confusing Smart Filter exclusionary results",
     "body": "I am not sure if I'm using the 'Smart Filter' correctly; it seems to exclude more results than expected.",
     "sender": "user52@example.com",
     "category": "general",
@@ -469,16 +469,16 @@
   },
   {
     "email_id": "e053",
-    "subject": "General High Subject",
+    "subject": "Differences between Archiving and Deleting projects",
     "body": "Could you explain the difference between 'Archiving' and 'Deleting' a project in more detail?",
     "sender": "user53@example.com",
     "category": "general",
     "priority": "high",
-    "is_ambiguous": false
+    "is_ambiguous": true
   },
   {
     "email_id": "e054",
-    "subject": "General High Subject",
+    "subject": "Clarification on pricing tiers for small teams",
     "body": "Information about the new pricing tiers is confusing. Which one should a 10-person team choose?",
     "sender": "user54@example.com",
     "category": "general",
@@ -487,7 +487,7 @@
   },
   {
     "email_id": "e055",
-    "subject": "General Medium Subject",
+    "subject": "Training webinars for new administrators",
     "body": "Does the platform offer any training webinars or certification programs for new administrators?",
     "sender": "user55@example.com",
     "category": "general",
@@ -496,7 +496,7 @@
   },
   {
     "email_id": "e056",
-    "subject": "General Medium Subject",
+    "subject": "PDF user guide for offline support staff",
     "body": "How can I download the latest user guide in a PDF format for offline reading by our support staff?",
     "sender": "user56@example.com",
     "category": "general",
@@ -505,7 +505,7 @@
   },
   {
     "email_id": "e057",
-    "subject": "General Medium Subject",
+    "subject": "Best practices for organizing large folders",
     "body": "What are the best practices for organizing large folders with thousands of individual file entries?",
     "sender": "user57@example.com",
     "category": "general",
@@ -514,7 +514,7 @@
   },
   {
     "email_id": "e058",
-    "subject": "General Low Subject",
+    "subject": "Mobile version roadmap inquiry",
     "body": "The recent update is interesting, but I'm curious about the long-term roadmap for the mobile version.",
     "sender": "user58@example.com",
     "category": "general",
@@ -523,7 +523,7 @@
   },
   {
     "email_id": "e059",
-    "subject": "General Low Subject",
+    "subject": "Positive feedback on new dashboard design",
     "body": "Just wanted to say that the new dashboard looks great! Thanks to the design team for the improvement.",
     "sender": "user59@example.com",
     "category": "general",
@@ -532,7 +532,7 @@
   },
   {
     "email_id": "e060",
-    "subject": "General Low Subject",
+    "subject": "Referral program for inviting colleagues",
     "body": "Is there a referral program where I can get some credits for inviting other colleagues to join?",
     "sender": "user60@example.com",
     "category": "general",
