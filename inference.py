@@ -17,8 +17,10 @@ MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.1-8b-instant")
 
 TASK_IDS = ["easy", "medium", "hard"]
 
+BENCHMARK = "email_triage_env"
+SUCCESS_THRESHOLD = 0.6
 
-# ---------------- SYSTEM PROMPT ----------------
+
 SYSTEM_PROMPT = """
 You are a senior customer support triage expert.
 
@@ -33,7 +35,6 @@ Return ONLY JSON:
 """
 
 
-# ---------------- SAFE SCORE ----------------
 def safe_score(x):
     EPS = 1e-6
     try:
@@ -47,7 +48,6 @@ def safe_score(x):
     return x
 
 
-# ---------------- RULE-BASED ----------------
 def rule_based(obs):
     text = (obs.get("subject", "") + " " + obs.get("body", "")).lower()
 
@@ -68,37 +68,24 @@ def rule_based(obs):
     return {"category": "general", "priority": "medium", "is_ambiguous": ambiguous}
 
 
-# ---------------- VALIDATION ----------------
 def validate_action(result, obs):
     rule = rule_based(obs)
 
     valid_categories = ["billing", "bug", "technical", "feature", "general"]
     valid_priorities = ["urgent", "high", "medium", "low"]
 
-    # Fix category
     if result.get("category") not in valid_categories:
         result["category"] = rule["category"]
 
-    # Fix priority
     if result.get("priority") not in valid_priorities:
         result["priority"] = rule["priority"]
 
-    # Fix ambiguity
     if "is_ambiguous" not in result:
         result["is_ambiguous"] = rule["is_ambiguous"]
-
-    # Consistency rules
-    if result["category"] == "bug":
-        result["priority"] = "urgent"
-    elif result["category"] == "feature":
-        result["priority"] = "low"
-    elif result["category"] == "billing":
-        result["priority"] = "high"
 
     return result
 
 
-# ---------------- LLM ACTION ----------------
 def get_llm_action(obs):
     if client is None:
         return rule_based(obs)
@@ -132,9 +119,8 @@ def get_llm_action(obs):
         return rule_based(obs)
 
 
-# ---------------- RUN TASK ----------------
 def run_task(task_id):
-    print(f"[START] task={task_id}", flush=True)
+    print(f"[START] task={task_id} env={BENCHMARK} model={MODEL_NAME}", flush=True)
 
     rewards = []
 
@@ -143,15 +129,17 @@ def run_task(task_id):
         json={"task_id": task_id, "seed": 42}
     ).json()
 
-    for step in range(20):
+    for step in range(1, 61):
         action = get_llm_action(obs)
+        error = None
 
         try:
             result = requests.post(
                 f"{BASE_URL}/step",
                 json=action
             ).json()
-        except Exception:
+        except Exception as e:
+            error = str(e)
             break
 
         reward = safe_score(result.get("reward", 0.0))
@@ -159,8 +147,10 @@ def run_task(task_id):
 
         rewards.append(reward)
 
+        action_str = json.dumps(action, separators=(",", ":"))
+
         print(
-            f"[STEP] task={task_id} step={step+1} reward={reward:.6f} done={str(done).lower()}",
+            f"[STEP] step={step} action={action_str} reward={reward:.4f} done={str(done).lower()} error={error}",
             flush=True
         )
 
@@ -169,16 +159,16 @@ def run_task(task_id):
 
         obs = result.get("observation", {})
 
-    raw_total = sum(rewards)
-    score = safe_score(raw_total / (raw_total + 1))
+    score = sum(rewards) / len(rewards) if rewards else 0.0
+    success = score >= SUCCESS_THRESHOLD
+    rewards_str = ",".join([f"{r:.4f}" for r in rewards])
 
     print(
-        f"[END] task={task_id} score={score:.6f} steps={len(rewards)}",
+        f"[END] task={task_id} success={str(success).lower()} steps={len(rewards)} score={score:.4f} rewards={rewards_str}",
         flush=True
     )
 
 
-# ---------------- MAIN ----------------
 def main():
     for task in TASK_IDS:
         run_task(task)

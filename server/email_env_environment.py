@@ -11,7 +11,7 @@ from email_env.server.grader import grade_easy, grade_medium, grade_hard
 
 
 _DOCKER_DATA_PATH = Path("/app/env/server/data.json")
-_LOCAL_DATA_PATH = Path(__file__).parent / "data.json"
+_LOCAL_DATA_PATH = Path(file).parent / "data.json"
 
 DATA_PATH = _DOCKER_DATA_PATH if _DOCKER_DATA_PATH.exists() else _LOCAL_DATA_PATH
 
@@ -19,32 +19,26 @@ DATA_PATH = _DOCKER_DATA_PATH if _DOCKER_DATA_PATH.exists() else _LOCAL_DATA_PAT
 def load_data():
     try:
         if not DATA_PATH.exists():
-            print(f"ERROR: Data file not found at {DATA_PATH}")
             return []
         with open(DATA_PATH, "r") as f:
             data = json.load(f)
             if not isinstance(data, list):
-                print(f"ERROR: Data format invalid, expected list, got {type(data)}")
                 return []
             return data
-    except Exception as e:
-        print(f"ERROR loading data: {e}")
+    except Exception:
         return []
 
 
-# ---------------- SAFE SCORE ----------------
 def safe_score(score):
     EPS = 1e-6
     try:
         score = float(score)
     except:
         return EPS
-
     if score <= 0:
         return EPS
     if score >= 1:
         return 1 - EPS
-
     return score
 
 
@@ -52,23 +46,21 @@ class EmailEnvironment(Environment):
 
     SUPPORTS_CONCURRENT_SESSIONS: bool = True
 
-    def __init__(self):
+    def init(self):
         self.data = load_data()
         self._state = None
         self._episode_id = str(uuid4())
 
-    # ---------------- RESET ----------------
     def reset(self, task_id="easy", seed=None) -> EmailObservation:
 
         if seed is not None:
             random.seed(seed)
 
         if not self.data:
-            # Emergency fallback to prevent 500
             self.data = [{
                 "email_id": "fallback",
                 "subject": "Missing Data",
-                "body": "No data found in data.json",
+                "body": "No data found",
                 "sender": "system",
                 "category": "general",
                 "priority": "low",
@@ -80,9 +72,10 @@ class EmailEnvironment(Environment):
             current_index=0,
             total_reward=0.0,
             done=False,
-            task_id=task_id,
-            reward_history=[]
+            task_id=task_id
         )
+
+        self._state.reward_history = []
 
         email = self._state.email_queue[0]
 
@@ -93,12 +86,9 @@ class EmailEnvironment(Environment):
             sender=email["sender"],
             step_count=0,
             done=False,
-            task_id=task_id,
-            feedback="Environment reset successful"
+            task_id=task_id
         )
 
-
-    # ---------------- REWARD ----------------
     def compute_reward(self, action: EmailAction, email: dict) -> float:
         task = self._state.task_id
 
@@ -113,7 +103,6 @@ class EmailEnvironment(Environment):
 
         return safe_score(score)
 
-    # ---------------- FEEDBACK ----------------
     def generate_feedback(self, action: EmailAction, email: dict, reward: float) -> str:
         parts = []
 
@@ -137,7 +126,6 @@ class EmailEnvironment(Environment):
 
         return " | ".join(parts)
 
-    # ---------------- STEP ----------------
     def step(self, action: EmailAction) -> Tuple[EmailObservation, float, bool, dict]:
 
         if self._state.done:

@@ -1,5 +1,11 @@
 name: email_env_v2
-version: 0.1.0
+version: 0.2.0
+
+tags:
+  - openenv
+  - email-triage
+  - nlp
+  - customer-support
 
 models:
   action: EmailAction
@@ -8,5 +14,5 @@ models:
   reward: float
 
 environment:
-  max_steps: 20
+  max_steps: 60
   deterministic: true
