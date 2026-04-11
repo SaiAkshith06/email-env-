@@ -1,88 +1,90 @@
-# Email Triage Environment
+---
+title: Email Triage OpenEnv
+emoji: 📧
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_file: app.py
+pinned: false
+---
 
-CI
+# Email Triage Environment
 
 ## Why Email Triage?
 
-Customer support teams handle thousands of emails daily. Misclassifying a billing issue as technical — or missing an urgent production bug — can cost companies revenue and customer trust.
+Customer support teams handle thousands of emails daily. Misclassifying a billing issue as technical — or missing an urgent production bug — can directly impact revenue and user trust.
 
-This environment simulates real-world email triage:
-- Categorising emails correctly
-- Assigning proper priority
-- Detecting ambiguous cases for human review
+This environment simulates real-world email triage by requiring an agent to:
+- Categorise emails correctly  
+- Assign appropriate priority  
+- Detect ambiguous cases for human escalation  
 
 ---
 
 ## Environment Overview
 
 ### Categories
-- billing
-- technical
-- bug
-- feature
-- general
+- billing  
+- technical  
+- bug  
+- feature  
+- general  
 
 ### Priority Levels
-- low
-- medium
-- high
-- urgent
+- low  
+- medium  
+- high  
+- urgent  
 
 ---
 
 ## Task Difficulty
 
-| Task | Description |
-|------|------------|
-| Easy | Category classification |
-| Medium | Category + Priority |
-| Hard | Category + Priority + Ambiguity + Reasoning |
+| Task   | Description |
+|--------|------------|
+| Easy   | Predict correct category |
+| Medium | Predict category + priority |
+| Hard   | Predict category + priority + ambiguity |
 
 ---
 
 ## Reward Design
 
-- Weighted scoring for category, priority, ambiguity
-- Partial credit for near-correct answers
-- Bonus for keyword-based reasoning
-- All scores strictly in (0,1)
+- Continuous rewards strictly in (0, 1)  
+- Partial credit for near-correct predictions  
+- Priority proximity scoring  
+- Ambiguity detection bonus  
+- Deterministic and reproducible grading  
 
 ---
 
 ## Architecture
 
-Email Input → LLM + Rule Hybrid → Feedback → Grader → Reward
-
----
-
-## Try It Locally
-
-uvicorn server.app:app --reload
+Email Input → Hybrid Agent (LLM + Rules) → Environment → Feedback → Grader → Reward  
 
 ---
 
 ## Features
 
-- Hybrid LLM + rule-based inference
-- Feedback-driven learning loop
-- Deterministic grading system
-- Realistic dataset with ambiguity
-- OpenEnv compatible
+- Hybrid LLM + rule-based inference  
+- Feedback-aware environment loop  
+- Deterministic reward computation  
+- Support for easy / medium / hard tasks  
+- OpenEnv-compatible design  
 
 ---
 
 ## Dataset
 
-- 40+ diverse emails
-- All categories and priorities covered
-- Includes ambiguous and edge cases
+- 60 diverse email samples  
+- Covers all categories and priority levels  
+- Includes ambiguous and edge cases  
+- Designed to simulate real-world support scenarios  
 
 ---
 
-## Future Improvements
+## Run Locally
 
-- Larger dataset (100+ emails)
-- Multi-language support
-- Real-time agent training
-
----
+```bash
+uvicorn server.app:app --reload
+```
