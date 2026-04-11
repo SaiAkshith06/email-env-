@@ -20,56 +20,31 @@ class EmailEnv(
 
     This client connects to the environment server and allows the agent
     to interact with the email classification task.
-
-    The agent predicts:
-    - category (billing, technical, etc.)
-    - priority (low, medium, high, urgent)
-    - whether the email is ambiguous
-
-    Example:
-        >>> from email_env.client import EmailEnv
-        >>> from email_env.models import EmailAction, Category, Priority
-        >>>
-        >>> with EmailEnv(base_url="http://localhost:8000") as client:
-        ...     result = client.reset()
-        ...     print(result.observation.subject)
-        ...
-        ...     action = EmailAction(
-        ...         category=Category.BILLING,
-        ...         priority=Priority.HIGH,
-        ...         is_ambiguous=False
-        ...     )
-        ...     result = client.step(action)
-        ...     print(result.reward)
     """
 
     def _step_payload(self, action: EmailAction) -> Dict:
         """
         Convert EmailAction into JSON payload for /step.
-
-        Args:
-            action: EmailAction instance
-
-        Returns:
-            Dict payload
         """
-        return {
-            "category": action.category.value,
-            "priority": action.priority.value,
+        payload = {
+            "action_type": action.action_type.value,
             "is_ambiguous": action.is_ambiguous,
         }
+        
+        if action.category:
+            payload["category"] = action.category.value
+        if action.priority:
+            payload["priority"] = action.priority.value
+        if action.query:
+            payload["query"] = action.query
+            
+        return payload
 
     def _parse_result(self, payload: Dict) -> StepResult[EmailObservation]:
         """
         Parse server response into StepResult.
-
-        Args:
-            payload: response JSON from server
-
-        Returns:
-            StepResult object
         """
-        obs = payload.get("observation", {})
+        obs = payload.get("observation", {}) or payload # handles flat or nested
 
         observation = EmailObservation(
             email_id=obs.get("email_id"),
@@ -79,6 +54,8 @@ class EmailEnv(
             step_count=obs.get("step_count"),
             done=obs.get("done"),
             task_id=obs.get("task_id"),
+            feedback=obs.get("feedback"),
+            investigate_used=obs.get("investigate_used", False)
         )
 
         return StepResult(
@@ -90,12 +67,6 @@ class EmailEnv(
     def _parse_state(self, payload: Dict) -> State:
         """
         Parse state endpoint response.
-
-        Args:
-            payload: JSON response
-
-        Returns:
-            State object
         """
         return State(
             episode_id=payload.get("episode_id"),

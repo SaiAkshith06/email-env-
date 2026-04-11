@@ -1,12 +1,12 @@
 import json
 import random
-from typing import Tuple
+from typing import Tuple, List
 from uuid import uuid4
 from pathlib import Path
 
 from openenv.core.env_server.interfaces import Environment
 
-from models import EmailAction, EmailObservation, EmailState
+from models import EmailAction, EmailObservation, EmailState, ActionType
 from server.grader import grade_easy, grade_medium, grade_hard
 
 
@@ -58,7 +58,6 @@ class EmailEnvironment(Environment):
         if seed is not None:
             random.seed(seed)
 
-        # Check FIRST, then shuffle
         if not self.data:
             self.data = [{
                 "email_id": "fallback",
@@ -78,10 +77,10 @@ class EmailEnvironment(Environment):
             current_index=0,
             total_reward=0.0,
             done=False,
-            task_id=task_id
+            task_id=task_id,
+            reward_history=[],
+            current_email_investigated=False
         )
-
-        self._state.reward_history = []
 
         email = self._state.email_queue[0]
 
@@ -92,7 +91,8 @@ class EmailEnvironment(Environment):
             sender=email["sender"],
             step_count=0,
             done=False,
-            task_id=task_id
+            task_id=task_id,
+            investigate_used=False
         )
 
     def compute_reward(self, action: EmailAction, email: dict) -> float:
@@ -132,29 +132,53 @@ class EmailEnvironment(Environment):
 
         return " | ".join(parts)
 
+    def _generate_hint(self, email: dict, query: str) -> str:
+        q = (query or "").lower()
+        if "priority" in q or "urgent" in q:
+            return f"The sender's tone suggests this is {email['priority']} priority."
+        if "category" in q or "type" in q:
+            body = email['body'].lower()
+            if "payment" in body or "invoice" in body or "billing" in body:
+                return "This email mentions financial transactions."
+            if "crash" in body or "error" in body or "technical" in body:
+                return "This email describes a technical failure."
+            return "The email topic is unclear without more context."
+        if "ambiguous" in q:
+            return "Yes, this email has mixed signals." if email.get('is_ambiguous') else "This email seems straightforward."
+        return "The email requires careful reading of the full body."
+
     def step(self, action: EmailAction) -> Tuple[EmailObservation, float, bool, dict]:
 
         if self._state.done:
-            return EmailObservation(
-                email_id="",
-                subject="",
-                body="",
-                sender="",
-                step_count=self._state.current_index,
-                done=True,
-                task_id=self._state.task_id,
-                feedback="",
-                prev_rewards=self._state.reward_history
-            ), safe_score(0.0), True, {}
+            return self._finalize_observation("Episode already finished."), safe_score(0.0), True, {}
 
         current_email = self._state.email_queue[self._state.current_index]
 
+        # --- HANDLE INVESTIGATE ---
+        if action.action_type == ActionType.INVESTIGATE:
+            hint = self._generate_hint(current_email, action.query)
+            self._state.current_email_investigated = True
+            
+            obs = EmailObservation(
+                email_id=current_email["email_id"],
+                subject=current_email["subject"],
+                body=current_email["body"],
+                sender=current_email["sender"],
+                step_count=self._state.current_index,
+                done=False,
+                task_id=self._state.task_id,
+                feedback=f"[HINT] {hint}",
+                prev_rewards=self._state.reward_history,
+                investigate_used=True
+            )
+            return obs, 0.0, False, {}
+
+        # --- HANDLE CLASSIFY ---
         reward = self.compute_reward(action, current_email)
-
         self._state.reward_history.append(reward)
-
         self._state.total_reward += reward
         self._state.current_index += 1
+        self._state.current_email_investigated = False # reset for next email
 
         done = self._state.current_index >= len(self._state.email_queue)
         self._state.done = done
@@ -163,7 +187,6 @@ class EmailEnvironment(Environment):
 
         if not done:
             next_email = self._state.email_queue[self._state.current_index]
-
             observation = EmailObservation(
                 email_id=next_email["email_id"],
                 subject=next_email["subject"],
@@ -173,22 +196,31 @@ class EmailEnvironment(Environment):
                 done=False,
                 task_id=self._state.task_id,
                 feedback=feedback,
-                prev_rewards=self._state.reward_history
+                prev_rewards=self._state.reward_history,
+                investigate_used=False
             )
         else:
-            observation = EmailObservation(
-                email_id="",
-                subject="",
-                body="",
-                sender="",
-                step_count=self._state.current_index,
-                done=True,
-                task_id=self._state.task_id,
-                feedback=feedback,
-                prev_rewards=self._state.reward_history
-            )
+            observation = self._finalize_observation(feedback)
 
         return observation, reward, done, {}
+
+    def _finalize_observation(self, last_feedback: str) -> EmailObservation:
+        avg_reward = sum(self._state.reward_history) / len(self._state.reward_history) if self._state.reward_history else 0.0
+        summary = (
+            f"{last_feedback} | "
+            f"Episode complete. {len(self._state.reward_history)} emails processed. "
+            f"Average reward: {avg_reward:.3f}. "
+            f"Total score: {self._state.total_reward:.3f}"
+        )
+        return EmailObservation(
+            email_id="", subject="", body="", sender="",
+            step_count=self._state.current_index,
+            done=True,
+            task_id=self._state.task_id,
+            feedback=summary,
+            prev_rewards=self._state.reward_history,
+            investigate_used=False
+        )
 
     @property
     def state(self) -> EmailState:

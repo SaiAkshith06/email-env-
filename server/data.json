@@ -538,5 +538,32 @@
     "category": "general",
     "priority": "low",
     "is_ambiguous": false
+  },
+  {
+    "email_id": "e061",
+    "subject": "Charged for a feature that doesn't work",
+    "body": "I was billed $299 for the analytics add-on last week but the dashboard crashes whenever I open it. Is my billing plan wrong or is this a bug?",
+    "sender": "confused_user@company.com",
+    "category": "billing",
+    "priority": "high",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e062",
+    "subject": "Can't login after subscription upgrade",
+    "body": "I upgraded to the Pro plan yesterday and the payment went through, but now it says 'Access Denied' when I try to login to the production server. Need help fixing my account access.",
+    "sender": "locked_out@startup.io",
+    "category": "technical",
+    "priority": "urgent",
+    "is_ambiguous": true
+  },
+  {
+    "email_id": "e063",
+    "subject": "Data export is either broken or I'm missing something",
+    "body": "I've been trying to export our Q4 reports for 3 days. Sometimes the button does nothing, other times it says 'Unauthorized'. I'm an admin on the Enterprise plan so this shouldn't happen.",
+    "sender": "analyst@bigcorp.com",
+    "category": "bug",
+    "priority": "urgent",
+    "is_ambiguous": true
   }
 ]

@@ -44,6 +44,21 @@ def reset(req: ResetRequest = None):
         traceback.print_exc()
         return JSONResponse(status_code=500, content={"error": str(e)})
 
+@app.get("/metrics")
+def get_metrics():
+    if env.state is None:
+        return {"error": "Call /reset first"}
+    h = env.state.reward_history
+    if not h:
+        return {"steps": 0, "total_reward": 0, "avg_reward": 0}
+    return {
+        "steps":        len(h),
+        "total_reward": round(env.state.total_reward, 4),
+        "avg_reward":   round(sum(h)/len(h), 4),
+        "max_reward":   round(max(h), 4),
+        "min_reward":   round(min(h), 4),
+    }
+
 @app.post("/step")
 def step(action: EmailAction):
     try:
