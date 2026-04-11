@@ -1,5 +1,6 @@
-from email_env.models import EmailAction, Category, Priority
-from email_env.server.grader import grade_easy, grade_medium, grade_hard, safe_score
+from models import Category, Priority, EmailAction
+from server.grader import grade_easy, grade_medium, grade_hard
+from server.email_env_environment import safe_score
 
 EMAIL = {"email_id":"t1","subject":"Payment failed","body":"My payment was declined trying to upgrade my billing plan last night. Please help!","sender":"u@e.com","category":"billing","priority":"high","is_ambiguous":False}
 

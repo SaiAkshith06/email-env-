@@ -4,8 +4,8 @@ from pydantic import BaseModel
 from typing import Optional
 import uvicorn, traceback
 
-from email_env.server.email_env_environment import EmailEnvironment
-from email_env.models import EmailAction
+from server.email_env_environment import EmailEnvironment
+from models import EmailAction
 
 app = FastAPI(title="Email Triage Environment", version="2.0.0")
 

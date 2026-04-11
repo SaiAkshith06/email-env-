@@ -14,9 +14,6 @@ version = "0.3.0"
 description = "Email Env environment for OpenEnv"
 requires-python = ">=3.10"
 dependencies = [
-    # Core OpenEnv runtime (provides FastAPI server + HTTP client types)
-    # install from github
-    # "openenv-core[core] @ git+https://github.com/meta-pytorch/OpenEnv.git",
     "openenv-core[core]>=0.2.1",
     "openai",
     "requests",
@@ -29,16 +26,16 @@ dev = [
 ]
 
 [project.scripts]
-# Server entry point - enables running via: uv run --project . server
-# or: python -m email_env.server.app
-server = "email_env.server.app:main"
+# Server entry point
+server = "server.app:main"
 
 [tool.setuptools]
 include-package-data = true
+py-modules = ["models", "client", "inference"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["email_env*"]
+include = ["server*"]
 
 [tool.setuptools.package-data]
-"email_env.server" = ["*.json"]
+"server" = ["*.json"]
