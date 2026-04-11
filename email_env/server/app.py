@@ -74,12 +74,7 @@ async def reset(request: Request):
         obs = env.reset(task_id=task_id, seed=seed)
         
         # 4. Return the observation at the root (OpenEnv standard)
-        # We also include 'observation' key for safety
-        obs_dict = obs.dict()
-        return {
-            **obs_dict,
-            "observation": obs_dict
-        }
+        return obs.dict()
     except Exception as e:
         print(f"--- RESET FAILED: {e} ---")
         traceback.print_exc()

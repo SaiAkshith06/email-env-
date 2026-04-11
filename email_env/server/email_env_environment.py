@@ -46,7 +46,7 @@ class EmailEnvironment(Environment):
 
     SUPPORTS_CONCURRENT_SESSIONS: bool = True
 
-    def init(self):
+    def __init__(self):
         self.data = load_data()
         self._state = None
         self._episode_id = str(uuid4())
@@ -56,11 +56,9 @@ class EmailEnvironment(Environment):
         if seed is not None:
             random.seed(seed)
 
-        shuffled = self.data.copy()
-        random.shuffle(shuffled)
-
+        # Check FIRST, then shuffle
         if not self.data:
-            shuffled = [{
+            self.data = [{
                 "email_id": "fallback",
                 "subject": "Missing Data",
                 "body": "No data found",
@@ -69,6 +67,9 @@ class EmailEnvironment(Environment):
                 "priority": "low",
                 "is_ambiguous": False
             }]
+
+        shuffled = self.data.copy()
+        random.shuffle(shuffled)
 
         self._state = EmailState(
             email_queue=shuffled,
