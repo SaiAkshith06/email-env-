@@ -36,7 +36,7 @@ server = "email_env.server.app:main"
 [tool.setuptools]
 include-package-data = true
 packages = ["email_env", "email_env.server"]
-package-dir = { "email_env" = ".", "email_env.server" = "server" }
+package-dir = { "email_env" = "." }
 
 [tool.setuptools.package-data]
 "email_env.server" = ["*.json"]

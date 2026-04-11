@@ -4,7 +4,7 @@ setup(
     name="openenv-email_env",
     version="0.3.0",
     packages=["email_env", "email_env.server"],
-    package_dir={"": "."},
+    package_dir={"email_env": "."},
     install_requires=[
         "openenv-core[core]>=0.2.1",
         "openai",
