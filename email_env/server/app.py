@@ -41,21 +41,45 @@ def health():
 
 from typing import Optional
 
+from fastapi import Request
+from fastapi.responses import JSONResponse
+import traceback
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    print(f"--- GLOBAL ERROR: {exc} ---")
+    traceback.print_exc()
+    return JSONResponse(
+        status_code=500,
+        content={"error": str(exc), "traceback": traceback.format_exc()},
+    )
+
 # ✅ RESET endpoint (deterministic + configurable)
 @app.post("/reset")
 def reset(req: dict = None):
-    print(f"--- RESET REQUEST RECEIVED: {req} ---")
-    
-    # Extract task_id and seed from dict manually to be lenient
-    task_id = "easy"
-    seed = None
-    
-    if req:
-        # Check both "task_id" and "task" (common variations)
-        task_id = req.get("task_id") or req.get("task") or "easy"
-        seed = req.get("seed")
+    try:
+        print(f"--- RESET REQUEST RECEIVED: {req} ---")
+        
+        task_id = "easy"
+        seed = None
+        
+        if req and isinstance(req, dict):
+            task_id = req.get("task_id") or req.get("task") or "easy"
+            seed = req.get("seed")
 
-    return env.reset(task_id=task_id, seed=seed)
+        obs = env.reset(task_id=task_id, seed=seed)
+        
+        # Return both formats to be safe
+        return {
+            "observation": obs,
+            "status": "success",
+            # Inject flat fields as well for clients expecting direct observation
+            **obs.dict() 
+        }
+    except Exception as e:
+        print(f"--- RESET FAILED: {e} ---")
+        traceback.print_exc()
+        raise e
 
 
 # ✅ STEP endpoint (safe handling)
