@@ -3,7 +3,7 @@ import os
 import json
 from openai import OpenAI
 
-BASE_URL = os.getenv("ENV_BASE_URL", os.getenv("HOST", "http://localhost:8000"))
+BASE_URL = os.getenv("ENV_BASE_URL", os.getenv("HOST", "http://localhost:7860"))
 
 try:
     client = OpenAI(
