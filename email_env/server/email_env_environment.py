@@ -47,9 +47,11 @@ class EmailEnvironment(Environment):
     SUPPORTS_CONCURRENT_SESSIONS: bool = True
 
     def __init__(self):
+        super().__init__()
         self.data = load_data()
         self._state = None
         self._episode_id = str(uuid4())
+        print(f"[EmailEnv] Loaded {len(self.data)} emails")
 
     def reset(self, task_id="easy", seed=None) -> EmailObservation:
 
