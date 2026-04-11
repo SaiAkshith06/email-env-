@@ -10,7 +10,7 @@ from email_env.models import EmailAction, EmailObservation, EmailState
 from email_env.server.grader import grade_easy, grade_medium, grade_hard
 
 
-_DOCKER_DATA_PATH = Path("/app/env/server/data.json")
+_DOCKER_DATA_PATH = Path("/app/env/email_env/server/data.json")
 _LOCAL_DATA_PATH = Path(__file__).parent / "data.json"
 
 DATA_PATH = _DOCKER_DATA_PATH if _DOCKER_DATA_PATH.exists() else _LOCAL_DATA_PATH

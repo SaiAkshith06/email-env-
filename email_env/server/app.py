@@ -43,10 +43,19 @@ from typing import Optional
 
 # ✅ RESET endpoint (deterministic + configurable)
 @app.post("/reset")
-def reset(req: Optional[ResetRequest] = None):
-    if req is None:
-        req = ResetRequest()
-    return env.reset(task_id=req.task_id, seed=req.seed)
+def reset(req: dict = None):
+    print(f"--- RESET REQUEST RECEIVED: {req} ---")
+    
+    # Extract task_id and seed from dict manually to be lenient
+    task_id = "easy"
+    seed = None
+    
+    if req:
+        # Check both "task_id" and "task" (common variations)
+        task_id = req.get("task_id") or req.get("task") or "easy"
+        seed = req.get("seed")
+
+    return env.reset(task_id=task_id, seed=seed)
 
 
 # ✅ STEP endpoint (safe handling)
