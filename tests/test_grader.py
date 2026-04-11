@@ -1,7 +1,12 @@
-import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from email_env.models import EmailAction, Category, Priority
-from email_env.server.grader import grade_easy, grade_medium, grade_hard, safe_score
+try:
+    from email_env.models import EmailAction, Category, Priority
+    from email_env.server.grader import grade_easy, grade_medium, grade_hard, safe_score
+except ImportError:
+    # Fallback for local testing without installation
+    import sys, os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from models import EmailAction, Category, Priority
+    from server.grader import grade_easy, grade_medium, grade_hard, safe_score
 
 EMAIL = {"email_id":"t1","subject":"Payment failed","body":"My card was declined trying to upgrade my plan last night. Please help!","sender":"u@e.com","category":"billing","priority":"high","is_ambiguous":False}
 
