@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 setup(
     name="openenv-email_env",
     version="0.3.0",
-    packages=["email_env", "email_env.server"],
-    package_dir={"email_env": "."},
+    packages=find_packages(),
+    include_package_data=True,
     install_requires=[
         "openenv-core[core]>=0.2.1",
         "openai",
