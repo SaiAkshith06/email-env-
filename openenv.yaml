@@ -1,4 +1,4 @@
-name: email_env_v2
+name: adaptive_triage_env
 version: 0.2.0
 description: "RL environment for adaptive triage – classify support emails by category, priority and ambiguity"
 author: "Kola"

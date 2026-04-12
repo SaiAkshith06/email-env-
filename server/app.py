@@ -7,7 +7,7 @@ import uvicorn, traceback
 from server.email_env_environment import EmailEnvironment
 from models import EmailAction
 
-app = FastAPI(title="Email Triage Environment", version="2.0.0")
+app = FastAPI(title="Adaptive Triage Environment", version="2.0.0")
 
 print("--- INITIALIZING EMAIL ENVIRONMENT V2 (60 EMAILS) ---")
 env = EmailEnvironment()
@@ -19,7 +19,7 @@ class ResetRequest(BaseModel):
 
 @app.get("/")
 def root():
-    return {"status": "ok", "message": "Email Triage Environment Running", "version": "2.0.0"}
+    return {"status": "ok", "message": "Adaptive Triage Environment Running", "version": "2.0.0"}
 
 @app.get("/health")
 def health():

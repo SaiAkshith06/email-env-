@@ -1,5 +1,5 @@
 ---
-title: Email Triage OpenEnv
+title: Adaptive Triage OpenEnv
 emoji: 📧
 colorFrom: blue
 colorTo: purple
@@ -8,7 +8,7 @@ app_file: server/app.py
 pinned: false
 tags:
   - openenv
-  - email-triage
+  - adaptive-triage
   - nlp
   - customer-support
   - reinforcement-learning
