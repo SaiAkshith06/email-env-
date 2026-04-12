@@ -1,11 +1,11 @@
 name: email_env_v2
 version: 0.2.0
-description: "RL environment for email triage – classify support emails by category, priority and ambiguity"
+description: "RL environment for adaptive triage – classify support emails by category, priority and ambiguity"
 author: "Kola"
 
 tags:
   - openenv
-  - email-triage
+  - adaptive-triage
   - nlp
   - customer-support
 

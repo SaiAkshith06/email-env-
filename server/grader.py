@@ -119,8 +119,8 @@ def grade_hard(action, email) -> float:
     return safe_score(score)
 
 
-# ---------------- SUPER ----------------
-def grade_super(action, email, investigate_count=0) -> float:
+# ---------------- ADAPTIVE ----------------
+def grade_adaptive(action, email, investigate_count=0) -> float:
     # Start with hard score
     score = float(grade_hard(action, email))
     

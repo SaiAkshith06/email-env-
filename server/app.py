@@ -31,7 +31,7 @@ def get_tasks():
         {"id": "easy", "description": "Predict category only"},
         {"id": "medium", "description": "Predict category + priority"},
         {"id": "hard", "description": "Predict category + priority + ambiguity"},
-        {"id": "super", "description": "Full classification with efficiency penalty for over-investigating"}
+        {"id": "adaptive", "description": "Full classification with efficiency penalty for over-investigating"}
     ]}
 
 @app.post("/reset")

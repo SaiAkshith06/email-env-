@@ -16,42 +16,26 @@ tags:
 
 # 📧 Email Triage Environment
 
-[![CI](https://github.com/SaiAkshith06/email-env/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/email-env/actions/workflows/ci.yml)
-[![OpenEnv Compatible](https://img.shields.io/badge/OpenEnv-Compatible-blue)](https://github.com/meta-pytorch/OpenEnv)
-[![HF Space](https://img.shields.io/badge/🤗-Live%20Demo-yellow)](https://saiakshith06-email-env-v2.hf.space)
+> *An RL environment for training agents that operate under asymmetric information - deciding when to act on incomplete data vs. when the cost of investigation is worth the reduction in uncertainty.*
 
-> *The first OpenEnv environment modelling the two-phase decision loop of expert support triage: investigate uncertainty, then act.*
+Most classification environments assume the agent has full information. Real-world decision making doesn't work that way. A support engineer reading a vague ticket must decide: **act now with 70% confidence, or spend time gathering context?**
 
-Customer support agents don't just classify emails — they decide **whether they have enough information to act, or whether it's worth spending time to investigate first**. This environment trains agents to master that tradeoff.
-
-Unlike simple classifiers, agents here face a genuine explore-exploit problem:
-- **Investigate** (0 reward, but receive a contextual hint)
-- **Classify** (scored on accuracy + efficiency)
+This environment operationalises that tradeoff. Agents face 63 support scenarios with varying information quality and must learn an **optimal investigation policy** - not just a classification policy.
 
 Agents that learn *when* to ask for help — and when to act confidently — consistently outscore pure classifiers on the `hard` and `super` tasks.
 
 ---
 
-## Why Email Triage?
-
-Customer support teams process **thousands of emails daily**. Misrouting a billing complaint to the technical team — or failing to escalate a production outage buried in a vague subject line — costs companies millions. This environment trains AI agents to handle triage with the precision of an experienced support lead:
-
-- Correctly categorise emails across 5 domains
-- Assess urgency across 4 priority levels
-- Flag genuinely ambiguous cases for human review
-- Learn *when* to request more context vs. act immediately
-
----
-
 ## Baseline Scores
 
-| Agent | Easy | Medium | Hard | Super |
+| Agent | Easy | Medium | Hard | Adaptive |
 |---|---|---|---|---|
 | Random | 0.20 | 0.11 | 0.08 | 0.07 |
 | Rule-based | 0.71 | 0.58 | 0.44 | 0.41 |
 | LLM (llama-3.1-8b) | 0.89 | 0.76 | 0.63 | 0.58 |
 
-*Scores are average reward across 63 emails. A trained RL agent should exceed the LLM baseline on `hard` and `super` by learning optimal investigate-vs-classify timing.*
+*Scores are average reward across 63 emails.
+A trained RL agent should exceed LLM baseline on hard/super.*
 
 ---
 
@@ -176,7 +160,7 @@ curl https://saiakshith06-email-env-v2.hf.space/metrics
 
 ---
 
-## Multi-Step Investigation
+## Optimal Investigation Policy
 
 Unlike simple classifiers, this environment supports a two-phase agent loop:
 
@@ -184,7 +168,7 @@ Unlike simple classifiers, this environment supports a two-phase agent loop:
 ```json
 {"action_type": "investigate", "query": "What is the priority of this email?"}
 ```
-Returns a hint in `observation.feedback` with **zero reward**. Limited to 1 investigation per email for full reward; over-investigation on `super` results in efficiency penalties.
+Returns a hint in `observation.feedback` with zero reward. Limited to 1 use per email for full reward; over-investigation on "super" difficulty results in efficiency penalties.
 
 **Phase 2 — Classify**
 ```json
@@ -197,55 +181,4 @@ Returns a hint in `observation.feedback` with **zero reward**. Limited to 1 inve
 ```
 Returns reward based on task difficulty.
 
-This creates a genuine **explore-exploit tradeoff**: spending a step to investigate reduces uncertainty but costs time. Agents that learn when to investigate vs. classify directly score higher than pure classifiers.
-
----
-
-## Run Locally
-
-```bash
-git clone https://github.com/YOUR_USERNAME/email-env
-cd email-env
-pip install -e ".[dev]"
-uvicorn server.app:app --reload --port 7860
-```
-
-Run the inference script:
-```bash
-export ENV_BASE_URL=http://localhost:7860
-python inference.py
-```
-
-Run tests:
-```bash
-pytest tests/ -v
-```
-
----
-
-## Project Structure
-email-env/
-├── inference.py          # Agent inference script (required by OpenEnv)
-├── models.py             # Action, Observation, State models
-├── client.py             # Environment client
-├── openenv.yaml          # OpenEnv configuration
-├── Dockerfile            # Container definition
-├── server/
-│   ├── app.py            # FastAPI server
-│   ├── email_env_environment.py  # Core environment logic
-│   ├── grader.py         # Reward computation
-│   ├── tasks.py          # Task definitions
-│   └── data.json         # Email dataset (63 samples)
-└── tests/
-└── test_grader.py    # Grader unit tests
-
----
-
-## OpenEnv Compatibility
-
-This environment fully implements the OpenEnv spec:
-- Inherits from `openenv.core.env_server.interfaces.Environment`
-- `EmailAction` inherits from `openenv Action`
-- `EmailObservation` inherits from `openenv Observation`
-- Exposes standard `/reset`, `/step`, `/tasks`, `/health` endpoints
-- Compatible with `openenv validate`
+This creates a genuine explore-exploit tradeoff: spending a step to investigate reduces uncertainty but costs time. Agents that learn when to investigate vs. classify directly score higher than pure classifiers.

@@ -15,7 +15,7 @@ except Exception:
 
 MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.1-8b-instant")
 
-TASK_IDS = ["easy", "medium", "hard", "super"]
+TASK_IDS = ["easy", "medium", "hard", "adaptive"]
 
 BENCHMARK = "email_triage_env"
 SUCCESS_THRESHOLD = 0.6

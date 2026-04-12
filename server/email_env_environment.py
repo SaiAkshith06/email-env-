@@ -7,7 +7,7 @@ from pathlib import Path
 from openenv.core.env_server.interfaces import Environment
 
 from models import EmailAction, EmailObservation, EmailState, ActionType
-from server.grader import grade_easy, grade_medium, grade_hard, grade_super
+from server.grader import grade_easy, grade_medium, grade_hard, grade_adaptive
 
 
 _DOCKER_DATA_PATH = Path("/app/env/server/data.json")
@@ -69,7 +69,7 @@ class EmailEnvironment(Environment):
                 "is_ambiguous": False
             }]
 
-        if task_id in ["hard", "super"]:
+        if task_id in ["hard", "adaptive"]:
             pool = [e for e in self.data if e.get("difficulty") == "hard"] or self.data
         else:
             pool = [e for e in self.data if e.get("difficulty") != "hard"] or self.data
@@ -113,8 +113,8 @@ class EmailEnvironment(Environment):
             score = grade_medium(action, email)
         elif task == "hard":
             score = grade_hard(action, email)
-        elif task == "super":
-            score = grade_super(action, email, self._state.current_email_investigate_count)
+        elif task == "adaptive":
+            score = grade_adaptive(action, email, self._state.current_email_investigate_count)
         else:
             score = 0.0
 
