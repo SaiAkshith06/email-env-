@@ -69,7 +69,12 @@ class EmailEnvironment(Environment):
                 "is_ambiguous": False
             }]
 
-        shuffled = self.data.copy()
+        if task_id in ["hard", "super"]:
+            pool = [e for e in self.data if e.get("difficulty") == "hard"] or self.data
+        else:
+            pool = [e for e in self.data if e.get("difficulty") != "hard"] or self.data
+
+        shuffled = pool.copy()
         random.shuffle(shuffled)
 
         self._state = EmailState(
@@ -90,10 +95,13 @@ class EmailEnvironment(Environment):
             subject=email["subject"],
             body=email["body"],
             sender=email["sender"],
+            sender_tier=email.get("sender_tier", "unknown"),
+            hours_since_received=email.get("hours_since_received", 0),
             step_count=0,
             done=False,
             task_id=task_id,
-            investigate_used=False
+            investigate_used=False,
+            episode_progress=0.0
         )
 
     def compute_reward(self, action: EmailAction, email: dict) -> float:
@@ -163,17 +171,21 @@ class EmailEnvironment(Environment):
             self._state.current_email_investigated = True
             self._state.current_email_investigate_count += 1
             
+            progress = self._state.current_index / max(1, len(self._state.email_queue))
             obs = EmailObservation(
                 email_id=current_email["email_id"],
                 subject=current_email["subject"],
                 body=current_email["body"],
                 sender=current_email["sender"],
+                sender_tier=current_email.get("sender_tier", "unknown"),
+                hours_since_received=current_email.get("hours_since_received", 0),
                 step_count=self._state.current_index,
                 done=False,
                 task_id=self._state.task_id,
                 feedback=f"[HINT] {hint}",
                 prev_rewards=self._state.reward_history,
-                investigate_used=True
+                investigate_used=True,
+                episode_progress=progress
             )
             return obs, 0.0, False, {}
 
@@ -192,17 +204,21 @@ class EmailEnvironment(Environment):
 
         if not done:
             next_email = self._state.email_queue[self._state.current_index]
+            progress = self._state.current_index / max(1, len(self._state.email_queue))
             observation = EmailObservation(
                 email_id=next_email["email_id"],
                 subject=next_email["subject"],
                 body=next_email["body"],
                 sender=next_email["sender"],
+                sender_tier=next_email.get("sender_tier", "unknown"),
+                hours_since_received=next_email.get("hours_since_received", 0),
                 step_count=self._state.current_index,
                 done=False,
                 task_id=self._state.task_id,
                 feedback=feedback,
                 prev_rewards=self._state.reward_history,
-                investigate_used=False
+                investigate_used=False,
+                episode_progress=progress
             )
         else:
             observation = self._finalize_observation(feedback)
@@ -219,12 +235,15 @@ class EmailEnvironment(Environment):
         )
         return EmailObservation(
             email_id="", subject="", body="", sender="",
+            sender_tier="unknown",
+            hours_since_received=0,
             step_count=self._state.current_index,
             done=True,
             task_id=self._state.task_id,
             feedback=summary,
             prev_rewards=self._state.reward_history,
-            investigate_used=False
+            investigate_used=False,
+            episode_progress=1.0
         )
 
     @property

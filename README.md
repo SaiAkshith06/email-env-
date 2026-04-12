@@ -8,15 +8,30 @@ app_file: server/app.py
 pinned: false
 ---
 
-# Email Triage Environment (v3.0)
+# 📧 Email Triage Environment
 
-## Why Email Triage?
+> *The first OpenEnv environment modelling the two-phase decision loop of expert support triage: investigate uncertainty, then act.*
 
-Customer support teams handle thousands of emails daily. Misclassifying a billing issue as technical — or missing an urgent production bug — can directly impact revenue and user trust.
+Customer support agents don't just classify emails — they decide **whether they have enough information to act, or whether it's worth spending time to investigate first**. This environment trains agents to master that tradeoff.
 
-This environment is now a **genuine RL task** with sequential decision-making:
-- **Classify**: Take a risk and categorize immediately.
-- **Investigate**: Request more context first (costs a step, but returns a valuable hint).
+Unlike simple classifiers, agents here face a genuine explore-exploit problem:
+- **Investigate** (0 reward, but receive a contextual hint)
+- **Classify** (scored on accuracy + efficiency)
+
+Agents that learn *when* to ask for help — and when to act confidently — consistently outscore pure classifiers on the `hard` and `super` tasks.
+
+---
+
+## Baseline Scores
+
+| Agent | Easy | Medium | Hard | Super |
+|---|---|---|---|---|
+| Random | 0.20 | 0.11 | 0.08 | 0.07 |
+| Rule-based | 0.71 | 0.58 | 0.44 | 0.41 |
+| LLM (llama-3.1-8b) | 0.89 | 0.76 | 0.63 | 0.58 |
+
+*Scores are average reward across 63 emails.
+A trained RL agent should exceed LLM baseline on hard/super.*
 
 ---
 

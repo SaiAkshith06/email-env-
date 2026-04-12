@@ -99,6 +99,19 @@ def grade_hard(action, email) -> float:
     if any(kw in body for kw in kws):
         score += 0.15
 
+    # Check priority-signal consistency
+    urgent_signals = ["production", "down", "data loss", "breach", "critical", "all users"]
+    high_signals = ["broken", "failed", "cannot", "blocked", "payment"]
+    body_lower = body
+
+    has_urgent_signal = any(s in body_lower for s in urgent_signals)
+    has_high_signal = any(s in body_lower for s in high_signals)
+
+    if action.priority == "urgent" and has_urgent_signal and email["priority"] == "urgent":
+        score += 0.05    # correctly identified urgency signal
+    elif action.priority == "urgent" and not has_urgent_signal:
+        score -= 0.05    # hallucinated urgency
+
     # prevent negative
     if score < 0:
         score = 0.0
@@ -111,8 +124,16 @@ def grade_super(action, email, investigate_count=0) -> float:
     # Start with hard score
     score = float(grade_hard(action, email))
     
-    # Penalise for using investigate more than once per email
-    if investigate_count > 1:
-        score -= 0.1 * (investigate_count - 1)
+    if investigate_count == 0 and score > 0.85:
+        score += 0.05    # got it right without needing a hint
+    elif investigate_count == 1 and score > 0.85:
+        pass            # normal - used investigate once, got it right
+    elif investigate_count > 1:
+        score -= 0.1 * (investigate_count - 1)    # penalise over-investigating
+
+    # SLA bonus
+    hours = email.get("hours_since_received", 0)
+    if action.priority == "urgent" and hours > 48 and email["priority"] == "urgent":
+        score += 0.05    # correctly escalated an old urgent email
         
     return safe_score(max(0.0, score))

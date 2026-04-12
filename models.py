@@ -48,12 +48,15 @@ class EmailObservation(Observation):
     subject: str = Field(default="")
     body: str = Field(default="")
     sender: str = Field(default="")
+    sender_tier: str = Field(default="unknown")
+    hours_since_received: int = Field(default=0)
     step_count: int = Field(default=0)
     done: bool = Field(default=False)
     task_id: str = Field(default="task1")
     feedback: str = Field(default="")
     prev_rewards: List[float] = Field(default_factory=list)
     investigate_used: bool = Field(default=False)
+    episode_progress: float = Field(default=0.0, description="Fraction of episode completed (0.0 to 1.0)")
 
 
 class EmailState(BaseModel):
